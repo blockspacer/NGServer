@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_MC_TIME_H
-#define MASSGATE_MOD_MC_TIME_H
+#ifndef NGSERVER_MC_TIME_H
+#define NGSERVER_MC_TIME_H
 
 
 #include <ctime>
@@ -30,4 +30,4 @@ private:
 }
 
 
-#endif //MASSGATE_MOD_MC_TIME_H
+#endif //NGSERVER_MC_TIME_H

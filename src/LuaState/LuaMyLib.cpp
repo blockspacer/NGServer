@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_LUAMYLIB_H
-#define MASSGATE_MOD_LUAMYLIB_H
+#ifndef NGSERVER_LUAMYLIB_H
+#define NGSERVER_LUAMYLIB_H
 
 #include <lua.hpp>
 
@@ -21,4 +21,4 @@ static int luaopen_libmylib(lua_State *l) {
 }
 
 
-#endif //MASSGATE_MOD_LUAMYLIB_H
+#endif //NGSERVER_LUAMYLIB_H

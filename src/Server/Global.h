@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_GLOBAL_H
-#define MASSGATE_MOD_GLOBAL_H
+#ifndef NGSERVER_GLOBAL_H
+#define NGSERVER_GLOBAL_H
 
 
 #include <map>
@@ -62,4 +62,4 @@ public:
 };
 
 
-#endif //MASSGATE_MOD_GLOBAL_H
+#endif //NGSERVER_GLOBAL_H

@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_MESSAGEQUEUE_H
-#define MASSGATE_MOD_MESSAGEQUEUE_H
+#ifndef NGSERVER_MESSAGEQUEUE_H
+#define NGSERVER_MESSAGEQUEUE_H
 
 
 #include <pthread.h>
@@ -18,7 +18,7 @@
 template<typename T>
 class MessageQueue {
 public:
-    MessageQueue() : m_queue_({}) {};
+    MessageQueue() : m_queue_() {};
 
     ~MessageQueue() = default;
 
@@ -99,4 +99,4 @@ private:
 };
 
 
-#endif //MASSGATE_MOD_MESSAGEQUEUE_H
+#endif //NGSERVER_MESSAGEQUEUE_H

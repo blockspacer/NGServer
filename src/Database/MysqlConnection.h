@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_CONNECTION_H
-#define MASSGATE_MOD_CONNECTION_H
+#ifndef NGSERVER_CONNECTION_H
+#define NGSERVER_CONNECTION_H
 
 
 #include <string>
@@ -328,4 +328,4 @@ private:
 }
 
 
-#endif //MASSGATE_MOD_CONNECTION_H
+#endif //NGSERVER_CONNECTION_H

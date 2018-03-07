@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_TG_UUID_H
-#define MASSGATE_MOD_TG_UUID_H
+#ifndef NGSERVER_TG_UUID_H
+#define NGSERVER_TG_UUID_H
 
 
 #include <uuid/uuid.h>
@@ -31,4 +31,4 @@ public:
 }
 
 
-#endif //MASSGATE_MOD_TG_UUID_H
+#endif //NGSERVER_TG_UUID_H

@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_TIMEABLE_H
-#define MASSGATE_MOD_TIMEABLE_H
+#ifndef NGSERVER_TIMEABLE_H
+#define NGSERVER_TIMEABLE_H
 
 namespace Util {
 
@@ -34,4 +34,4 @@ private:
 }
 
 
-#endif //MASSGATE_MOD_TIMEABLE_H
+#endif //NGSERVER_TIMEABLE_H

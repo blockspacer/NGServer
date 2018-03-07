@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_STRINGUTIL_H
-#define MASSGATE_MOD_STRINGUTIL_H
+#ifndef NGSERVER_STRINGUTIL_H
+#define NGSERVER_STRINGUTIL_H
 
 
 #include <string>
@@ -31,4 +31,4 @@ char *PackMessage(std::string &data, char *message);
 }
 
 
-#endif /* MASSGATE_MOD_STRINGUTIL_H */
+#endif /* NGSERVER_STRINGUTIL_H */

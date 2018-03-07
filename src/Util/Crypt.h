@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_CRYPT_H
-#define MASSGATE_MOD_CRYPT_H
+#ifndef NGSERVER_CRYPT_H
+#define NGSERVER_CRYPT_H
 
 #include <iostream>
 #include <string>
@@ -101,4 +101,4 @@ public:
 }
 
 
-#endif //MASSGATE_MOD_CRYPT_H
+#endif //NGSERVER_CRYPT_H

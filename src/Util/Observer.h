@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_OBSERVER_H
-#define MASSGATE_MOD_OBSERVER_H
+#ifndef NGSERVER_OBSERVER_H
+#define NGSERVER_OBSERVER_H
 
 class Observable;
 
@@ -13,4 +13,4 @@ public:
 };
 
 
-#endif //MASSGATE_MOD_OBSERVER_H
+#endif //NGSERVER_OBSERVER_H

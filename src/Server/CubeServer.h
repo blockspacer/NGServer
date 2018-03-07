@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_CUBESERVER_H
-#define MASSGATE_MOD_CUBESERVER_H
+#ifndef NGSERVER_CUBESERVER_H
+#define NGSERVER_CUBESERVER_H
 
 #include <string>
 #include <uuid/uuid.h>
@@ -32,4 +32,4 @@ private:
 };
 
 
-#endif //MASSGATE_MOD_CUBESERVER_H
+#endif //NGSERVER_CUBESERVER_H

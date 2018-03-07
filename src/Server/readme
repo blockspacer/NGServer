@@ -1,4 +1,4 @@
-$ scp /home/me/CLionProjects/massgate_mod/cmake-build-debug-clang/ngserver/Server/Server cwj5012@111.231.98.252:/home/cwj5012/App
+$ scp /home/me/CLionProjects/NGServer/cmake-build-debug-clang/src/Server/Server cwj5012@111.231.98.252:/home/cwj5012/App
 $ ssh cwj5012@111.231.98.252
 
 

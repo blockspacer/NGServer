@@ -1,7 +1,7 @@
 link_directories(/usr/local/lib/libuv/)
 link_directories(/usr/local/lib/gtest/)
 link_directories(/usr/local/lib/glog/lib)
-link_directories(/home/me/CLionProjects/massgate_mod/cmake-build-debug-clang/ngserver/LuaState)
+link_directories(/home/me/CLionProjects/NGServer/cmake-build-debug-clang/src/LuaState)
 
 add_library(mylib SHARED
         LuaMyLib.cpp)

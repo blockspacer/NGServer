@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_OBSERVABLE_H
-#define MASSGATE_MOD_OBSERVABLE_H
+#ifndef NGSERVER_OBSERVABLE_H
+#define NGSERVER_OBSERVABLE_H
 
 
 #include <vector>
@@ -59,4 +59,4 @@ private:
     std::vector<Observer *> obs_;
 };
 
-#endif //MASSGATE_MOD_OBSERVABLE_H
+#endif //NGSERVER_OBSERVABLE_H

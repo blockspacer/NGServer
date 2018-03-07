@@ -1,5 +1,5 @@
-#ifndef MASSGATE_MOD_TIMESTAMP_H
-#define MASSGATE_MOD_TIMESTAMP_H
+#ifndef NGSERVER_TIMESTAMP_H
+#define NGSERVER_TIMESTAMP_H
 
 
 #include <zconf.h>
@@ -25,4 +25,4 @@ public:
 }
 
 
-#endif //MASSGATE_MOD_TIMESTAMP_H
+#endif //NGSERVER_TIMESTAMP_H
