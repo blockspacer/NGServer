@@ -75,7 +75,9 @@ $ sudo make install
 
 ### Install cmake
 
+```
 $ sudo apt install cmake
+```
 
 ### Install gtest
 
