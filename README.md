@@ -68,4 +68,16 @@ $ sudo make install
 
 ## Build
 
+$ cmake .
+$ make
+$ ./src/Server/Server
+
+If success, the terminal will show the log like below.
+
+I0307 17:21:16.692776  8822 _Server.cpp:241] server start, pid: 8822, tid: 139948436178816
+I0307 17:21:16.760125  8822 _Server.cpp:247] connect database success
+I0307 17:21:16.760208  8822 _Server.cpp:103] ListenServer, IP: 0.0.0.0 Port: 7000
+I0307 17:21:16.760246  8822 _Server.cpp:108] KeepAlive: 1
+I0307 17:21:16.760373  8822 _Server.cpp:202] TimerHanlde 50ms NotifyClient
+
 
