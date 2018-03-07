@@ -1,0 +1,85 @@
+$ scp /home/me/CLionProjects/massgate_mod/cmake-build-debug-clang/ngserver/Server/Server cwj5012@111.231.98.252:/home/cwj5012/App
+$ ssh cwj5012@111.231.98.252
+
+
+dd if=/dev/zero bs=1M count=30 | nc 127.0.0.1 7000
+dd if=/dev/zero bs=1K count=300000 | nc 127.0.0.1 7000
+
+# #####################
+# install google protobuf
+# #####################
+
+$ sudo apt-get install autoconf automake libtool curl make g++ unzip
+
+$ git clone https://github.com/google/protobuf.git
+
+./configure --prefix=/usr/local/lib/protobuf
+
+# uninstall
+$ sudo make uninstall
+
+# #####################
+# shell command
+# #####################
+
+$ lsof -i:7000
+
+$ netstat -tunlp|grep 7000
+
+$ kill -9 [pid]
+
+# #####################
+# install other app
+# #####################
+
+$ sudo apt-get install terminator
+
+ctrl + shift + down
+ctrl + shift + right
+ctrl + w
+
+$ sudo apt-get install openssh-server
+
+# #####################
+# server socket step
+# #####################
+
+1. Initialize Winsock.
+2. Create a socket.
+3. Bind the socket.
+4. Listen on the socket for a client.
+5. Accept a connection from a client.
+6. Receive and send data.
+7. Disconnect.
+
+# #####################
+# todo
+# #####################
+
+third part
+    use rapidjson x
+    use protobuf  o
+    use mysql     o
+    use redis     x
+
+code
+    queue message
+
+# #####################
+# note
+# #####################
+
+1. libuv request is one time
+
+auto *req = (write_req_t *) malloc(sizeof(write_req_t));
+uv_write((uv_write_t *) req, client, &ubt, 1, echo_write);
+uv_write((uv_write_t *) req, client, &ubt, 1, echo_write);
+
+this code is error, when second call req, need reinit req.
+
+2. libuv tcp close callback get fd
+
+void uv_close(uv_handle_t* handle, uv_close_cb close_cb);
+
+in the callback function close_cb, try to get fd is 32767, becasue the socket
+is closed;

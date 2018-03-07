@@ -1,0 +1,8 @@
+add_subdirectory(Server)
+add_subdirectory(Database)
+add_subdirectory(Test)
+add_subdirectory(Util)
+add_subdirectory(LuaState)
+#add_subdirectory(uvpp)
+add_subdirectory(uvw)
+add_subdirectory(Proto)

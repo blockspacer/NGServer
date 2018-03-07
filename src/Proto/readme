@@ -1,0 +1,3 @@
+$ cd ngserver/Proto/
+
+$ /usr/local/lib/protobuf/bin/protoc Message.proto --cpp_out=./

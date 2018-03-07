@@ -1,0 +1,9 @@
+# #####################
+# install lib uuid
+# #####################
+
+# <uuid/uuid.h>
+$ sudo apt-get install uuid-dev
+
+target_link_libraries(Test
+        uuid)

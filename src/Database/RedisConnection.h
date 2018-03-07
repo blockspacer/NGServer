@@ -1,0 +1,10 @@
+#ifndef MASSGATE_MOD_REDISCONNECTION_H
+#define MASSGATE_MOD_REDISCONNECTION_H
+
+
+class RedisConnection {
+    // TODO
+};
+
+
+#endif //MASSGATE_MOD_REDISCONNECTION_H

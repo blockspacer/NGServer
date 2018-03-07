@@ -1,0 +1,14 @@
+# #####################
+# install lua
+# #####################
+
+$ sudo apt-get install lua50
+$ sudo apt-get install lua5.1
+$ sudo apt-get install lua5.2
+
+$ lua50
+$ lua5.1
+$ lua5.2
+
+$ sudo apt install lua5.3
+$ sudo apt install lua5.3-dev
