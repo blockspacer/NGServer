@@ -6,6 +6,8 @@
 #include "Global.h"
 #include "StringConversion.h"
 #include "DatabaseInstance.h"
+#include "User.h"
+#include "MessagePacket.h"
 
 std::map<ProtoMsg::MSG, ProtoBaseHandle *> ProtoBaseHandle::handles_ = {};
 
@@ -24,91 +26,47 @@ void ProtoBaseHandle::Execute(const ProtoMsg::Message &msg) {
     }
 }
 
-int UserAuthId(const ProtoMsg::Message &msg) {
-    auto db = DBInstance::instance();
-    db.GetQuery().Execute("use ngserver");
-    std::stringstream ss;
-    ss << "select id from user where ";
-    ss << "name = '" << msg.request().login().name() << "' and ";
-    ss << "password = '" << msg.request().login().password() << "'";
-    ss << ";";
-    auto result = MysqlResult();
-    db.GetQuery().ExecuteQuery(result, ss.str());
-    if (result.Next()) {
-        int id = result.GetInt("id");
-        if (id > 0) {
-            GlobalData::user_auth.find(id)->second = true;
-            DLOG(INFO) << "write: auth success";
-            return id;
-        } else {
-            DLOG(INFO) << "write: auth failed";
-            return -1;
-        }
-    }
-    return -1;
-}
-
-// Login_Request Login_Response
+// login
 template<>
 void ProtoMessageHandle<ProtoMsg::Login_Request>
 ::Process(const ProtoMsg::Message &msg) {
-    LOG(INFO) << "Login_Request";
-    // add new client to client map
-
     int fd = msg.session_id();
     uvw::TcpHandle *tcp = GlobalData::fd_tcp.find(fd)->second;
 
     if (GlobalData::client_user.find(tcp) ==
         GlobalData::client_user.end()) {
-        int user_id = UserAuthId(msg);
+        auto user = User(msg.request().login().name(),
+                         msg.request().login().password());
+        int user_id = user.Auth();
+        int result = 0;
         if (user_id > 0) {
             if (GlobalData::user_auth.find(user_id) == GlobalData::user_auth.end()) {
-                LOG(INFO) << "Add client to client map";
                 GlobalData::client_user.insert(
                         std::pair<uvw::TcpHandle *, int>(tcp, user_id));
                 GlobalData::user_client.insert(
                         std::pair<int, uvw::TcpHandle *>(user_id, tcp));
-                GlobalData::user_auth.insert(
-                        std::pair<int, bool>(1, false));
-                LOG(INFO) << "current client count: "
-                          << GlobalData::client_user.size();
-                auto msg1 = new ProtoMsg::LoginResponse;
-                msg1->set_result(0);
-                auto msg2 = new ProtoMsg::Response;
-                msg2->set_allocated_login(msg1);
-                auto msg3 = new ProtoMsg::Message;
-                msg3->set_msg_type(ProtoMsg::MSG::Login_Response);
-                msg3->set_session_id(fd);
-                msg3->set_userid(user_id);
-                msg3->set_allocated_response(msg2);
-                std::shared_ptr<Worker> worker(new Worker(*msg3));
-                GlobalData::write_message_queue.Add(worker);
+                if (GlobalData::user_auth.find(user_id) == GlobalData::user_auth.end()) {
+                    GlobalData::user_auth.insert(std::pair<int, bool>(user_id, true));
+                }
+                LOG(INFO) << "current client count: " << GlobalData::client_user.size();
+                result = 0; // auth success
             } else {
-                auto msg1 = new ProtoMsg::LoginResponse;
-                msg1->set_result(2);
-                auto msg2 = new ProtoMsg::Response;
-                msg2->set_allocated_login(msg1);
-                auto msg3 = new ProtoMsg::Message;
-                msg3->set_msg_type(ProtoMsg::MSG::Login_Response);
-                msg3->set_session_id(fd);
-                msg3->set_userid(user_id);
-                msg3->set_allocated_response(msg2);
-                std::shared_ptr<Worker> worker(new Worker(*msg3));
-                GlobalData::write_message_queue.Add(worker);
+                result = 2; // auth failed repeat login
             }
         } else {
-            auto msg1 = new ProtoMsg::LoginResponse;
-            msg1->set_result(1);
-            auto msg2 = new ProtoMsg::Response;
-            msg2->set_allocated_login(msg1);
-            auto msg3 = new ProtoMsg::Message;
-            msg3->set_msg_type(ProtoMsg::MSG::Login_Response);
-            msg3->set_session_id(fd);
-            msg3->set_userid(user_id);
-            msg3->set_allocated_response(msg2);
-            std::shared_ptr<Worker> worker(new Worker(*msg3));
-            GlobalData::write_message_queue.Add(worker);
+            result = 1; // auth failed name and password is not match
         }
+        auto msg1 = new ProtoMsg::LoginResponse;
+        msg1->set_result(result);
+        auto msg2 = new ProtoMsg::Response;
+        msg2->set_allocated_login(msg1);
+        auto msg3 = new ProtoMsg::Message;
+        msg3->set_msg_type(ProtoMsg::MSG::Login_Response);
+        msg3->set_session_id(fd);
+        msg3->set_userid(user_id);
+        msg3->set_allocated_response(msg2);
+        std::shared_ptr<Worker> worker(new Worker(*msg3));
+        GlobalData::write_message_queue.Add(worker);
     }
 }
 
@@ -119,59 +77,26 @@ ProtoMessageHandle<ProtoMsg::Login_Request>
 template<>
 void ProtoMessageHandle<ProtoMsg::Login_Response>
 ::Process(const ProtoMsg::Message &msg) {
-    LOG(INFO) << "Login_Response";
     int fd = msg.session_id();
-    std::string data("");
-    msg.SerializeToString(&data);
     uvw::TcpHandle *tcp = GlobalData::fd_tcp.find(fd)->second;
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    tcp->write(message, sizeof(message));
+    auto message = MessagePacket::Pack(msg);
+    tcp->write(message->message, message->length);
 }
 
 template<>
 ProtoMessageHandle<ProtoMsg::Login_Response>
         ProtoMessageHandle<ProtoMsg::Login_Response>::handle_ = {};
 
-// Register_Request Register_Response
+// register
 template<>
 void ProtoMessageHandle<ProtoMsg::Register_Request>
 ::Process(const ProtoMsg::Message &msg) {
-    bool ok = true;
-    if (msg.request().register_().name().empty()) {
-        DLOG(INFO) << "null name";
-        ok = false;
-    }
-    if (msg.request().register_().password().empty()) {
-        DLOG(INFO) << "null password";
-        ok = false;
-    }
-    if (msg.request().register_().email().empty()) {
-        DLOG(INFO) << "null email";
-        ok = false;
-    }
-    if (msg.request().register_().phone().empty()) {
-        DLOG(INFO) << "null phone";
-        ok = false;
-    }
-    auto db = DBInstance::instance();
-    db.GetQuery().Execute("use ngserver");
-    std::stringstream ss;
-    ss << "select id,name from user where ";
-    ss << "name = '" << msg.request().register_().name() << "'";
-    ss << ";";
+    auto user = User(msg.request().register_().name(),
+                     msg.request().register_().password(),
+                     msg.request().register_().email(),
+                     msg.request().register_().phone());
 
-    auto result = MysqlResult();
-    db.GetQuery().ExecuteQuery(result, ss.str());
-    if (result.Next()) {
-        int id = result.GetInt("id");
-        if (id > 0) {
-            DLOG(INFO) << "duplicate name";
-            ok = false;
-        }
-    }
-
-    if (!ok) {
+    if (!user.SignUpCheck()) {
         int fd = msg.session_id();
         auto msg1 = new ProtoMsg::RegisterResponse;
         msg1->set_result(1);
@@ -186,6 +111,8 @@ void ProtoMessageHandle<ProtoMsg::Register_Request>
         return;
     }
 
+    auto db = DBInstance::instance();
+    std::stringstream ss;
     ss.str("");
     ss << "insert into user (name, password, email, phone ) values ( ";
     ss << "'" << msg.request().register_().name() << "',";
@@ -215,240 +142,15 @@ ProtoMessageHandle<ProtoMsg::Register_Request>
 template<>
 void ProtoMessageHandle<ProtoMsg::Register_Response>
 ::Process(const ProtoMsg::Message &msg) {
-    LOG(INFO) << "Register_Response";
     int fd = msg.session_id();
-    std::string data("");
-    msg.SerializeToString(&data);
     uvw::TcpHandle *tcp = GlobalData::fd_tcp.find(fd)->second;
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    tcp->write(message, sizeof(message));
+    auto message = MessagePacket::Pack(msg);
+    tcp->write(message->message, message->length);
 }
 
 template<>
 ProtoMessageHandle<ProtoMsg::Register_Response>
         ProtoMessageHandle<ProtoMsg::Register_Response>::handle_ = {};
-
-// Echo_Request
-template<>
-void ProtoMessageHandle<ProtoMsg::Echo_Request>
-::Process(const ProtoMsg::Message &msg) {
-    int user_id = msg.userid();
-    std::string data = msg.request().echo().msg();
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    auto it = GlobalData::user_client.find(user_id);
-    if (it != GlobalData::user_client.end()) {
-        auto tcp = GlobalData::user_client.at(user_id);
-        tcp->write(message, sizeof(message));
-        DLOG(INFO) << "write[" << user_id << "]: " << data;
-    }
-}
-
-template<>
-ProtoMessageHandle<ProtoMsg::Echo_Request>
-        ProtoMessageHandle<ProtoMsg::Echo_Request>::handle_ = {};
-
-// Other_Client_Notification
-template<>
-void ProtoMessageHandle<ProtoMsg::Other_Client_Notification>
-::Process(const ProtoMsg::Message &msg) {
-    int user_id = msg.userid();
-    std::string data = msg.notification().other_client().msg();
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    auto it = GlobalData::user_client.find(4);
-    if (it != GlobalData::user_client.end()) {
-        auto tcp = it->second;
-        tcp->write(message, sizeof(message));
-        DLOG(INFO) << "write[" << user_id << "]: " << data;
-    }
-}
-
-template<>
-ProtoMessageHandle<ProtoMsg::Other_Client_Notification>
-        ProtoMessageHandle<ProtoMsg::Other_Client_Notification>::handle_ = {};
-
-// cube operate
-template<>
-void ProtoMessageHandle<ProtoMsg::Cube_Operate_Request>
-::Process(const ProtoMsg::Message &msg) {
-    auto msg1 = new ProtoMsg::CubeOperateResponse;
-    msg1->set_movement(msg.request().cube_operate().movement());
-    msg1->set_turn(msg.request().cube_operate().turn());
-    msg1->set_user_id(msg.request().cube_operate().user_id());
-    auto msg2 = new ProtoMsg::Response;
-    msg2->set_allocated_cube_operate(msg1);
-    auto msg3 = new ProtoMsg::Message;
-    msg3->set_userid(msg.userid());
-    msg3->set_sequence(msg.sequence());
-    msg3->set_session_id(msg.session_id());
-    msg3->set_msg_type(ProtoMsg::MSG::Cube_Operate_Response);
-    msg3->set_allocated_response(msg2);
-
-    std::shared_ptr<Worker> worker(new Worker(*msg3));
-    GlobalData::write_message_queue.Add(worker);
-    delete msg3;
-
-    // save cube data to user_cube
-    auto msg11 = new ProtoMsg::CubeCreateResponse;
-    msg11->set_x(msg.request().cube_operate().x());
-    msg11->set_y(msg.request().cube_operate().y());
-    msg11->set_z(msg.request().cube_operate().z());
-    msg11->set_angle(msg.request().cube_operate().angle());
-    msg11->set_user_id(msg.request().cube_operate().user_id());
-    auto msg12 = new ProtoMsg::Response;
-    msg12->set_allocated_cube_create_response(msg11);
-    auto msg13 = new ProtoMsg::Message;
-    msg13->set_userid(msg.userid());
-    msg13->set_msg_type(ProtoMsg::MSG::Cube_Create_Response);
-    msg13->set_allocated_response(msg12);
-    if (GlobalData::user_client.find(msg.userid())
-        != GlobalData::user_client.end()) {
-        if (GlobalData::user_cube.find(msg.userid())
-            != GlobalData::user_cube.end()) {
-            GlobalData::user_cube.find(msg.userid())->second = *msg13;
-        }
-    }
-    delete msg13;
-
-}
-
-template<>
-ProtoMessageHandle<ProtoMsg::Cube_Operate_Request>
-        ProtoMessageHandle<ProtoMsg::Cube_Operate_Request>::handle_ = {};
-
-template<>
-void ProtoMessageHandle<ProtoMsg::Cube_Operate_Response>
-::Process(const ProtoMsg::Message &msg) {
-    std::string data("");
-    msg.SerializeToString(&data);
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    if (GlobalData::user_client.find(msg.userid())
-        != GlobalData::user_client.end()) {
-        for (auto &x : GlobalData::user_client) {
-            uvw::TcpHandle *tcp = x.second;
-            tcp->write(message, sizeof(message));
-        }
-    }
-}
-
-template<>
-ProtoMessageHandle<ProtoMsg::Cube_Operate_Response>
-        ProtoMessageHandle<ProtoMsg::Cube_Operate_Response>::handle_ = {};
-
-
-template<>
-void ProtoMessageHandle<ProtoMsg::Scene_Change_Complete_Request>
-::Process(const ProtoMsg::Message &msg) {
-    // LOG(INFO) << msg.DebugString();
-    uvw::TcpHandle *tcp = GlobalData::user_client.find(msg.userid())->second;
-
-    // creat other user cube
-    for (auto &x : GlobalData::user_cube) {
-        LOG(INFO) << "creat other user cube";
-        try {
-            LOG(INFO) << x.second.DebugString();
-        } catch (char *str) {
-            LOG(INFO) << str;
-        }
-
-        std::string data1;
-        auto msg1 = new ProtoMsg::CubeCreateResponse;
-        msg1->set_x(x.second.response().cube_create_response().x());
-        msg1->set_y(x.second.response().cube_create_response().y());
-        msg1->set_z(x.second.response().cube_create_response().z());
-        msg1->set_angle(x.second.response().cube_create_response().angle());
-        msg1->set_user_id(
-                x.second.response().cube_create_response().user_id());
-        auto msg2 = new ProtoMsg::Response;
-        msg2->set_allocated_cube_create_response(msg1);
-        auto msg3 = new ProtoMsg::Message;
-        msg3->set_userid(x.first);
-        msg3->set_msg_type(ProtoMsg::MSG::Cube_Create_Response);
-        msg3->set_allocated_response(msg2);
-        msg3->SerializeToString(&data1);
-        char message[data1.length() + 4];
-        Util::PackMessage(data1, message);
-        tcp->write(message, sizeof(message));
-    }
-
-    // create self cube
-    if (GlobalData::user_cube.find(msg.userid())
-        == GlobalData::user_cube.end()) {
-        LOG(INFO) << "create self cube";
-        std::string data1("");
-        auto msg1 = new ProtoMsg::CubeCreateResponse;
-        msg1->set_x(0);
-        msg1->set_y(0.5);
-        msg1->set_z(0);
-        msg1->set_user_id(msg.userid());
-        auto msg2 = new ProtoMsg::Response;
-        msg2->set_allocated_cube_create_response(msg1);
-        auto msg3 = new ProtoMsg::Message;
-        msg3->set_userid(msg.userid());
-        msg3->set_msg_type(ProtoMsg::MSG::Cube_Create_Response);
-        msg3->set_allocated_response(msg2);
-        msg3->SerializeToString(&data1);
-        char message[data1.length() + 4];
-        Util::PackMessage(data1, message);
-        tcp->write(message, sizeof(message));
-        delete msg3;
-
-        auto msg11 = new ProtoMsg::CubeCreateResponse;
-        msg11->set_x(0);
-        msg11->set_y(0.5);
-        msg11->set_z(0);
-        msg11->set_user_id(msg.userid());
-        auto msg12 = new ProtoMsg::Response;
-        msg12->set_allocated_cube_create_response(msg11);
-        auto msg13 = new ProtoMsg::Message;
-        msg13->set_userid(msg.userid());
-        msg13->set_msg_type(ProtoMsg::MSG::Cube_Create_Response);
-        msg13->set_allocated_response(msg12);
-        GlobalData::user_cube.insert(
-                std::pair<int, ProtoMsg::Message>(msg.userid(), *msg13));
-
-        for (auto &x : GlobalData::user_client) {
-            if (msg.userid() == x.first) {
-                continue;
-            }
-            tcp = x.second;
-            tcp->write(message, sizeof(message));
-        }
-    }
-}
-
-template<>
-ProtoMessageHandle<ProtoMsg::Scene_Change_Complete_Request>
-        ProtoMessageHandle<ProtoMsg::Scene_Change_Complete_Request>::handle_ = {};
-
-template<>
-void ProtoMessageHandle<ProtoMsg::Scene_Change_Complete_Response>
-::Process(const ProtoMsg::Message &msg) {}
-
-template<>
-ProtoMessageHandle<ProtoMsg::Scene_Change_Complete_Response>
-        ProtoMessageHandle<ProtoMsg::Scene_Change_Complete_Response>::handle_ = {};
-
-// cube create
-template<>
-void ProtoMessageHandle<ProtoMsg::Cube_Create_Response>
-::Process(const ProtoMsg::Message &msg) {}
-
-template<>
-ProtoMessageHandle<ProtoMsg::Cube_Create_Response>
-        ProtoMessageHandle<ProtoMsg::Cube_Create_Response>::handle_ = {};
-
-// cube delete
-template<>
-void ProtoMessageHandle<ProtoMsg::Cube_Delete_Response>
-::Process(const ProtoMsg::Message &msg) {}
-
-template<>
-ProtoMessageHandle<ProtoMsg::Cube_Delete_Response>
-        ProtoMessageHandle<ProtoMsg::Cube_Delete_Response>::handle_ = {};
 
 // match begin
 template<>
@@ -597,7 +299,6 @@ void ProtoMessageHandle<ProtoMsg::Match_Begin_Response>
 template<>
 ProtoMessageHandle<ProtoMsg::Match_Begin_Response>
         ProtoMessageHandle<ProtoMsg::Match_Begin_Response>::handle_ = {};
-
 
 // match complete
 template<>

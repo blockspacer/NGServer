@@ -19,7 +19,7 @@ add_executable(Server
         MessageQueue.cpp
         MessageQueue.h
         Global.h
-        Global.cpp)
+        Global.cpp User.cpp User.h Connector.cpp Connector.h MessagePacket.cpp MessagePacket.h)
 
 target_link_libraries(Server
         uv

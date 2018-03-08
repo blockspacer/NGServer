@@ -17,12 +17,6 @@ enum MSG {
     Message_Nofification = 11;
     Welcome_Notification = 12;
 
-    Echo_Request = 13;
-    Other_Client_Notification = 14;
-
-    Scene_Change_Complete_Request = 17;
-    Scene_Change_Complete_Response = 18;
-
     Match_Begin_Request = 21;
     Match_Begin_Response = 22;
 
@@ -82,22 +76,6 @@ message MessageNofification {
 
 message WelcomeNotification {
 
-}
-
-message EchoRequest {
-    string msg = 1;
-}
-
-message OtherClientNotification {
-    string msg = 1;
-}
-
-message SceneChangeCompleteRequest {
-    fixed32 id = 1;
-}
-
-message SceneChangeCompleteResponse {
-    fixed32 id = 1;
 }
 
 message MatchBeginRequest {
@@ -187,8 +165,6 @@ message Request {
     LoginRequest login = 1;
     LogoutRequest logout = 2;
     RegisterResquest register = 3;
-    EchoRequest echo = 4;
-    SceneChangeCompleteRequest scene_change_complete = 6;
     MatchBeginRequest match_begin = 7;
     MatchCompleteRequest match_complete = 8;
     MatchCancelRequest match_cancel = 9;
@@ -202,7 +178,6 @@ message Response {
     LoginResponse login = 1;
     LogoutResponse logout = 2;
     RegisterResponse register = 3;
-    SceneChangeCompleteResponse scene_change_complete = 5;
     MatchBeginResponse match_begin = 8;
     MatchCompleteResponse match_complete = 9;
     MatchCancelResponse match_cancel = 10;
@@ -216,7 +191,6 @@ message Response {
 message Notification {
     MessageNofification message = 1;
     WelcomeNotification welcome = 2;
-    OtherClientNotification other_client = 3;
 }
 
 message Command {
