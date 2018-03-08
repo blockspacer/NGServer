@@ -1,7 +1,3 @@
-$ scp /home/me/CLionProjects/NGServer/cmake-build-debug-clang/src/Server/Server cwj5012@111.231.98.252:/home/cwj5012/App
-$ ssh cwj5012@111.231.98.252
-
-
 dd if=/dev/zero bs=1M count=30 | nc 127.0.0.1 7000
 dd if=/dev/zero bs=1K count=300000 | nc 127.0.0.1 7000
 

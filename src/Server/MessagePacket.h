@@ -28,8 +28,8 @@ public:
         return mf;
     }
 
-    static std::string void UnPack() {
-
+    static std::string UnPack() {
+        return "";
     }
 };
 
