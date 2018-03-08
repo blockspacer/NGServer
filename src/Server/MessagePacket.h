@@ -6,11 +6,11 @@
 #include <StringConversion.h>
 
 typedef struct MessageFormat {
-    char *message;
-    unsigned long length;
+    char *data;
+    unsigned int length;
 
     ~MessageFormat() {
-        delete[] message;
+        delete[] data;
     }
 
 } MessageFormat;
@@ -23,7 +23,7 @@ public:
         auto *message = new char[data.length() + 4];
         Util::PackMessage(data, message);
         auto mf = std::make_shared<MessageFormat>();
-        mf->message = message;
+        mf->data = message;
         mf->length = data.length() + 4;
         return mf;
     }

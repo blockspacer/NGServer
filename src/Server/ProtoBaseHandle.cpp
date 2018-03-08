@@ -31,7 +31,7 @@ template<>
 void ProtoMessageHandle<ProtoMsg::Login_Request>
 ::Process(const ProtoMsg::Message &msg) {
     int fd = msg.session_id();
-    uvw::TcpHandle *tcp = GlobalData::fd_tcp.find(fd)->second;
+    auto *tcp = GlobalData::fd_tcp.find(fd)->second;
 
     if (GlobalData::client_user.find(tcp) ==
         GlobalData::client_user.end()) {
@@ -78,9 +78,9 @@ template<>
 void ProtoMessageHandle<ProtoMsg::Login_Response>
 ::Process(const ProtoMsg::Message &msg) {
     int fd = msg.session_id();
-    uvw::TcpHandle *tcp = GlobalData::fd_tcp.find(fd)->second;
+    auto *tcp = GlobalData::fd_tcp.find(fd)->second;
     auto message = MessagePacket::Pack(msg);
-    tcp->write(message->message, message->length);
+    tcp->write(message->data, message->length);
 }
 
 template<>
@@ -143,9 +143,9 @@ template<>
 void ProtoMessageHandle<ProtoMsg::Register_Response>
 ::Process(const ProtoMsg::Message &msg) {
     int fd = msg.session_id();
-    uvw::TcpHandle *tcp = GlobalData::fd_tcp.find(fd)->second;
+    auto *tcp = GlobalData::fd_tcp.find(fd)->second;
     auto message = MessagePacket::Pack(msg);
-    tcp->write(message->message, message->length);
+    tcp->write(message->data, message->length);
 }
 
 template<>
@@ -181,7 +181,7 @@ void ProtoMessageHandle<ProtoMsg::Match_Begin_Response>
 ::Process(const ProtoMsg::Message &msg) {
     std::string data("");
     msg.SerializeToString(&data);
-    uvw::TcpHandle *tcp = GlobalData::user_client.find(msg.userid())->second;
+    auto *tcp = GlobalData::user_client.find(msg.userid())->second;
     char message[data.length() + 4];
     Util::PackMessage(data, message);
     tcp->write(message, sizeof(message));
@@ -321,7 +321,6 @@ ProtoMessageHandle<ProtoMsg::Match_Complete_Response>
 template<>
 void ProtoMessageHandle<ProtoMsg::Match_Cancel_Request>
 ::Process(const ProtoMsg::Message &msg) {
-    LOG(INFO) << "Match_Cancel_Request";
     // remove user from user match data
     GlobalData::user_match.erase(msg.userid());
 
@@ -347,14 +346,9 @@ ProtoMessageHandle<ProtoMsg::Match_Cancel_Request>
 template<>
 void ProtoMessageHandle<ProtoMsg::Match_Cancel_Response>
 ::Process(const ProtoMsg::Message &msg) {
-    LOG(INFO) << "Match_Cancel_Response";
-
-    uvw::TcpHandle *tcp = GlobalData::user_client.find(msg.userid())->second;
-    std::string data("");
-    msg.SerializeToString(&data);
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    tcp->write(message, sizeof(message));
+    auto *tcp = GlobalData::user_client.find(msg.userid())->second;
+    auto message = MessagePacket::Pack(msg);
+    tcp->write(message->data, message->length);
 }
 
 template<>
@@ -395,23 +389,18 @@ ProtoMessageHandle<ProtoMsg::Plane_Operate_Request>
 template<>
 void ProtoMessageHandle<ProtoMsg::Plane_Operate_Response>
 ::Process(const ProtoMsg::Message &msg) {
-    std::string data("");
-    msg.SerializeToString(&data);
+    auto message = MessagePacket::Pack(msg);
     if (GlobalData::user_scene.find(msg.userid()) != GlobalData::user_scene.end()) {
         int scene = GlobalData::user_scene.find(msg.userid())->second;
         if (GlobalData::scene_user.find(scene) != GlobalData::scene_user.end()) {
             GlobalData::SceneUsers scene_users = GlobalData::scene_user.find(scene)->second;
             if (scene_users.one != 0) {
-                uvw::TcpHandle *tcp = GlobalData::user_client.at(scene_users.one);
-                char message[data.length() + 4];
-                Util::PackMessage(data, message);
-                tcp->write(message, sizeof(message));
+                auto *tcp = GlobalData::user_client.at(scene_users.one);
+                tcp->write(message->data, message->length);
             }
             if (scene_users.two != 0) {
-                uvw::TcpHandle *tcp = GlobalData::user_client.at(scene_users.two);
-                char message[data.length() + 4];
-                Util::PackMessage(data, message);
-                tcp->write(message, sizeof(message));
+                auto *tcp = GlobalData::user_client.at(scene_users.two);
+                tcp->write(message->data, message->length);
             }
         }
     }
@@ -425,12 +414,9 @@ ProtoMessageHandle<ProtoMsg::Plane_Operate_Response>
 template<>
 void ProtoMessageHandle<ProtoMsg::Wave_Create_Response>
 ::Process(const ProtoMsg::Message &msg) {
-    std::string data("");
-    msg.SerializeToString(&data);
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    uvw::TcpHandle *tcp = GlobalData::user_client.find(msg.userid())->second;
-    tcp->write(message, sizeof(message));
+    auto message = MessagePacket::Pack(msg);
+    auto *tcp = GlobalData::user_client.find(msg.userid())->second;
+    tcp->write(message->data, message->length);
 }
 
 template<>
@@ -482,15 +468,10 @@ ProtoMessageHandle<ProtoMsg::Exit_Scene_Request>
 template<>
 void ProtoMessageHandle<ProtoMsg::Exit_Scene_Response>
 ::Process(const ProtoMsg::Message &msg) {
-    std::string data("");
-    msg.SerializeToString(&data);
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    if (GlobalData::user_client.find(msg.userid())
-        != GlobalData::user_client.end()) {
-        uvw::TcpHandle *tcp =
-                GlobalData::user_client.find(msg.userid())->second;
-        tcp->write(message, sizeof(message));
+    auto message = MessagePacket::Pack(msg);
+    if (GlobalData::user_client.find(msg.userid()) != GlobalData::user_client.end()) {
+        auto *tcp = GlobalData::user_client.find(msg.userid())->second;
+        tcp->write(message->data, message->length);
     }
 }
 
@@ -511,17 +492,11 @@ void ProtoMessageHandle<ProtoMsg::Time_Sync_Request>
     msg3->set_msg_type(ProtoMsg::MSG::Time_Sync_Response);
     msg3->set_timestamp_ms(Util::TimeStamp::GetTimeStampMs());
     msg3->set_allocated_response(msg2);
-    // std::shared_ptr<Worker> worker(new Worker(*msg3));
-    // GlobalData::write_message_queue.Add(worker);
 
-    std::string data("");
-    msg3->SerializeToString(&data);
-    char message[data.length() + 4];
-    Util::PackMessage(data, message);
-    if (GlobalData::user_client.find(msg.userid())
-        != GlobalData::user_client.end()) {
-        uvw::TcpHandle *tcp = GlobalData::user_client.find(msg.userid())->second;
-        tcp->write(message, sizeof(message));
+    auto message = MessagePacket::Pack(msg);
+    if (GlobalData::user_client.find(msg.userid()) != GlobalData::user_client.end()) {
+        auto *tcp = GlobalData::user_client.find(msg.userid())->second;
+        tcp->write(message->data, message->length);
     }
 
     delete msg3;
@@ -564,23 +539,18 @@ ProtoMessageHandle<ProtoMsg::Plane_Destroy_Request>
 template<>
 void ProtoMessageHandle<ProtoMsg::Plane_Destroy_Response>
 ::Process(const ProtoMsg::Message &msg) {
-    std::string data("");
-    msg.SerializeToString(&data);
+    auto message = MessagePacket::Pack(msg);
     if (GlobalData::user_scene.find(msg.userid()) != GlobalData::user_scene.end()) {
         int scene = GlobalData::user_scene.find(msg.userid())->second;
         if (GlobalData::scene_user.find(scene) != GlobalData::scene_user.end()) {
             GlobalData::SceneUsers scene_users = GlobalData::scene_user.find(scene)->second;
             if (scene_users.one != 0) {
-                uvw::TcpHandle *tcp = GlobalData::user_client.at(scene_users.one);
-                char message[data.length() + 4];
-                Util::PackMessage(data, message);
-                tcp->write(message, sizeof(message));
+                auto *tcp = GlobalData::user_client.at(scene_users.one);
+                tcp->write(message->data, message->length);
             }
             if (scene_users.two != 0) {
-                uvw::TcpHandle *tcp = GlobalData::user_client.at(scene_users.two);
-                char message[data.length() + 4];
-                Util::PackMessage(data, message);
-                tcp->write(message, sizeof(message));
+                auto *tcp = GlobalData::user_client.at(scene_users.two);
+                tcp->write(message->data, message->length);
             }
         }
     }
