@@ -16,8 +16,6 @@ MessageQueue<std::shared_ptr<Worker>> GlobalData::write_message_queue =
         MessageQueue<std::shared_ptr<Worker>>();
 Consumer GlobalData::write_consumer = Consumer(write_message_queue);
 
-std::map<int, ProtoMsg::Message> GlobalData::user_cube = {};
-
 std::map<int, int> GlobalData::user_match = {};
 
 std::map<int, int> GlobalData::user_scene = {};

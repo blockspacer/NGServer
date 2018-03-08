@@ -24,11 +24,11 @@ public:
         Util::PackMessage(data, message);
         auto mf = std::make_shared<MessageFormat>();
         mf->data = message;
-        mf->length = data.length() + 4;
+        mf->length = (unsigned int) data.length() + 4;
         return mf;
     }
 
-    static void UnPack() {
+    static std::string void UnPack() {
 
     }
 };

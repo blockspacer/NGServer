@@ -40,9 +40,6 @@ public:
     static MessageQueue<std::shared_ptr<Worker>> write_message_queue;
     static Consumer write_consumer;
 
-    // user cube data
-    static std::map<int, ProtoMsg::Message> user_cube;
-
     // user match state
     static std::map<int, int> user_match;
 
