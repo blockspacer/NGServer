@@ -20,14 +20,8 @@ enum MSG {
     Echo_Request = 13;
     Other_Client_Notification = 14;
 
-    Cube_Operate_Request = 15;
-    Cube_Operate_Response = 16;
-
     Scene_Change_Complete_Request = 17;
     Scene_Change_Complete_Response = 18;
-
-    Cube_Create_Response = 19;
-    Cube_Delete_Response = 20;
 
     Match_Begin_Request = 21;
     Match_Begin_Response = 22;
@@ -96,42 +90,6 @@ message EchoRequest {
 
 message OtherClientNotification {
     string msg = 1;
-}
-
-message CubeOperateRequest {
-    float movement = 1;
-    float turn = 2;
-    fixed32 id = 3;
-    float x = 4;
-    float y = 5;
-    float z = 6;
-    fixed32 user_id = 7;
-    float angle = 8;
-}
-
-message CubeOperateResponse {
-    float movement = 1;
-    float turn = 2;
-    fixed32 id = 3;
-    float x = 4;
-    float y = 5;
-    float z = 6;
-    fixed32 user_id = 7;
-    float angle = 8;
-}
-
-message CubeCreateResponse {
-    float x = 1;
-    float y = 2;
-    float z = 3;
-    fixed32 user_id = 4; // belong to user
-    fixed32 id = 5; // unique cube id
-    float angle = 6;
-}
-
-message CubeDeleteResponse {
-    fixed32 id = 1; // unique cube id
-    fixed32 user_id = 2; // belong to user
 }
 
 message SceneChangeCompleteRequest {
@@ -230,7 +188,6 @@ message Request {
     LogoutRequest logout = 2;
     RegisterResquest register = 3;
     EchoRequest echo = 4;
-    CubeOperateRequest cube_operate = 5;
     SceneChangeCompleteRequest scene_change_complete = 6;
     MatchBeginRequest match_begin = 7;
     MatchCompleteRequest match_complete = 8;
@@ -245,10 +202,7 @@ message Response {
     LoginResponse login = 1;
     LogoutResponse logout = 2;
     RegisterResponse register = 3;
-    CubeOperateResponse cube_operate = 4;
     SceneChangeCompleteResponse scene_change_complete = 5;
-    CubeCreateResponse cube_create_response = 6;
-    CubeDeleteResponse cube_delete_Response = 7;
     MatchBeginResponse match_begin = 8;
     MatchCompleteResponse match_complete = 9;
     MatchCancelResponse match_cancel = 10;

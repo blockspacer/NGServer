@@ -28,14 +28,13 @@
 
 #include "Global.h"
 
-//const auto DEFAULT_IP = "127.0.0.1"; // local
-//const auto DEFAULT_IP = "192.168.62.137"; // home
-//const auto DEFAULT_IP = "192.168.107.128"; // work
-//const auto DEFAULT_IP = "111.231.98.252"; // tengxunyun
 const auto DEFAULT_IP = "0.0.0.0";
 const auto DEFAULT_PORT = 7000;
 const auto DEFAULT_BACKLOG = 128;
 
+/**
+ * @brief clean the disconnect client resource
+ */
 void ClientDisconnect(uvw::TcpHandle &tcp) {
     // remove auth user map
     auto it = GlobalData::client_user.find(&tcp);
