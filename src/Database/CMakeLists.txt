@@ -2,7 +2,7 @@ link_directories(/usr/lib/)
 link_directories(/usr/local/lib/glog/lib)
 
 add_executable(Database
-        main.cpp
+        _Database.cpp
         MysqlConnection.cpp
         MysqlConnection.h
         RedisConnection.cpp
