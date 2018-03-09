@@ -4,11 +4,11 @@
 #include <fstream>
 #include <TimeStamp.h>
 
-#include "Global.h"
+#include "../Global.h"
 #include "StringConversion.h"
-#include "DatabaseInstance.h"
-#include "User.h"
-#include "MessagePacket.h"
+#include "../DatabaseInstance.h"
+#include "../App/User.h"
+#include "../MessagePacket.h"
 
 std::map<ProtoMsg::MSG, ProtoBaseHandle *> ProtoBaseHandle::handles_ = {};
 
@@ -36,8 +36,8 @@ void ProtoMessageHandle<ProtoMsg::Login_Request>
 
     if (GlobalData::client_user.find(tcp) ==
         GlobalData::client_user.end()) {
-        auto user = User(msg.request().login().name(),
-                         msg.request().login().password());
+        auto user = User(std::move(msg.request().login().name()),
+                         std::move(msg.request().login().password()));
         int user_id = user.Auth();
         int result = 0;
         if (user_id > 0) {
@@ -92,10 +92,10 @@ ProtoMessageHandle<ProtoMsg::Login_Response>
 template<>
 void ProtoMessageHandle<ProtoMsg::Register_Request>
 ::Process(const ProtoMsg::Message &msg) {
-    auto user = User(msg.request().register_().name(),
-                     msg.request().register_().password(),
-                     msg.request().register_().email(),
-                     msg.request().register_().phone());
+    auto user = User(std::move(msg.request().register_().name()),
+                     std::move(msg.request().register_().password()),
+                     std::move(msg.request().register_().email()),
+                     std::move(msg.request().register_().phone()));
 
     if (!user.SignUpCheck()) {
         int fd = msg.session_id();

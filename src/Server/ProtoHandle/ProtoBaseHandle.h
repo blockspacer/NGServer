@@ -7,7 +7,7 @@
 #include <glog/logging.h>
 #include <gtest/gtest.h>
 
-#include "../Proto/Message.pb.h"
+#include "Message.pb.h"
 
 class ProtoBaseHandle {
 public:

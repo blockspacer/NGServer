@@ -21,16 +21,14 @@
 
 #include "StringConversion.h"
 #include "UUID.h"
-#include "ProtoBaseHandle.h"
+#include "ProtoHandle/ProtoBaseHandle.h"
 #include "DatabaseInstance.h"
 #include "MessageQueue.h"
 #include "StringConversion.h"
 
 #include "Global.h"
+#include "App/ConnectData.h"
 
-const auto DEFAULT_IP = "0.0.0.0";
-const auto DEFAULT_PORT = 7000;
-const auto DEFAULT_BACKLOG = 128;
 
 /**
  * @brief clean the disconnect client resource
@@ -101,6 +99,7 @@ void ClientDisconnect(uvw::TcpHandle &tcp) {
 void ListenServer(uvw::Loop &loop) {
     LOG(INFO) << "ListenServer, IP: " << DEFAULT_IP
               << " Port: " << DEFAULT_PORT;
+
     std::shared_ptr<uvw::TcpHandle> tcp = loop.resource<uvw::TcpHandle>();
 
     uvw::TcpHandle::Time ttime = std::chrono::duration<int>(5);
@@ -118,7 +117,6 @@ void ListenServer(uvw::Loop &loop) {
             ClientDisconnect(client);
             ptr->close();
         });
-
 
         client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()]
                                             (const uvw::CloseEvent &,
@@ -234,17 +232,23 @@ int main(int argc, char *argv[]) {
 
     // glog init
     google::InitGoogleLogging(argv[0]);
-    google::SetStderrLogging(google::GLOG_INFO);
-    FLAGS_colorlogtostderr = true;
+    google::SetLogDestination(google::GLOG_INFO, "./glog-");
+    FLAGS_alsologtostderr = true;
+    FLAGS_logbuflevel = -1;
 
-    LOG(INFO) << "server start, pid: " << getpid()
+    LOG(INFO) << "NGServer start, pid: " << getpid()
               << ", tid: " << pthread_self();
 
     // connect mysql
     DBInstance::conn.Connect();
     auto db = DBInstance::instance();
-    LOG(INFO) << "connect database "
-              << (db.conn.IsConnected() ? "success" : "failed");
+    if (!db.conn.IsConnected()) {
+        LOG(INFO) << "Connect database failed";
+        exit(0);
+    }
+    LOG(INFO) << "Connect database success"
+              << ", server: " << MYSQL_SERVER
+              << ", dbname: " << MYSQL_DBNAME;
 
     // libuv tcp init
     auto loop = uvw::Loop::getDefault();
@@ -256,7 +260,6 @@ int main(int argc, char *argv[]) {
     auto a = ProtoMsg::Message();
     std::ifstream is("Test.txt");
     a.ParseFromIstream(&is);
-//    LOG(INFO) << a.DebugString();
 
     // libuv run
     loop->run<uvw::Loop::Mode::DEFAULT>();

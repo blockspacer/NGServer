@@ -11,7 +11,7 @@
 #include <glog/logging.h>
 
 #include "../Proto/Message.pb.h"
-#include "ProtoBaseHandle.h"
+#include "ProtoHandle/ProtoBaseHandle.h"
 
 
 // TODO phtead safe

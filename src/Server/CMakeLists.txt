@@ -12,14 +12,20 @@ add_executable(Server
         ../Proto/Message.pb.h
         CubeServer.cpp
         CubeServer.h
-        ProtoBaseHandle.cpp
-        ProtoBaseHandle.h
+        ProtoHandle/ProtoBaseHandle.cpp
+        ProtoHandle/ProtoBaseHandle.h
         DatabaseInstance.cpp
         DatabaseInstance.h
         MessageQueue.cpp
         MessageQueue.h
         Global.h
-        Global.cpp User.cpp User.h Connector.cpp Connector.h MessagePacket.cpp MessagePacket.h)
+        Global.cpp
+        App/User.cpp
+        App/User.h
+        Connector.cpp
+        Connector.h 
+        MessagePacket.cpp
+        MessagePacket.h App/ConnectData.h)
 
 target_link_libraries(Server
         uv

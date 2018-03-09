@@ -1,11 +1,9 @@
 #include "DatabaseInstance.h"
 
-MysqlConnection DBInstance::conn = MysqlConnection("tcp://127.0.0.1:3306",
-                                                   "ngserver",
-                                                   "32z2ksZKUIIyaWdZ",
-                                                   "mysql");
+#include "./App/ConnectData.h"
 
-//MysqlConnection DBInstance::conn = MysqlConnection("tcp://127.0.0.1:3306",
-//                                                   "root",
-//                                                   "1234",
-//                                                   "mysql");
+MysqlConnection DBInstance::conn = MysqlConnection(MYSQL_SERVER,
+                                                   MYSQL_USER,
+                                                   MYSQL_PASSWORD,
+                                                   MYSQL_DBNAME);
+

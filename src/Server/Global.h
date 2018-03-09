@@ -16,31 +16,20 @@ public:
         int two;
     } SceneUsers;
 
-    // key:    fd
-    // value:  1
     static std::map<int, uvw::TcpHandle *> fd_tcp;
 
-    // key:    tcp handle
-    // value:  user id
     static std::map<uvw::TcpHandle *, int> client_user;
 
-    // key:    user id
-    // value:  tcp handle
     static std::map<int, uvw::TcpHandle *> user_client;
 
-    // key:   user id
-    // value: is login
     static std::map<int, bool> user_auth;
 
-    // read message worker queue
     static MessageQueue<std::shared_ptr<Worker>> read_message_queue;
     static Consumer read_consumer;
 
-    // write message worker queue
     static MessageQueue<std::shared_ptr<Worker>> write_message_queue;
     static Consumer write_consumer;
 
-    // user match state
     static std::map<int, int> user_match;
 
     // user game scene

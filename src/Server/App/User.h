@@ -4,24 +4,24 @@
 
 #include <string>
 
-#include "DatabaseInstance.h"
-#include "Global.h"
+#include "../DatabaseInstance.h"
+#include "../Global.h"
 
 class User {
 public:
     User() = delete;
 
-    User(const std::string &name,
-         const std::string &password)
+    User(const std::string &&name,
+         const std::string &&password)
             : is_auth_(false),
               id_(-1),
               name_(name),
               password_(password) {};
 
-    User(const std::string &name,
-         const std::string &password,
-         const std::string &email,
-         const std::string &phone)
+    User(const std::string &&name,
+         const std::string &&password,
+         const std::string &&email,
+         const std::string &&phone)
             : is_auth_(false),
               id_(-1),
               name_(name),
