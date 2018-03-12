@@ -12,22 +12,12 @@ public:
     User() = delete;
 
     User(const std::string &&name,
-         const std::string &&password)
-            : is_auth_(false),
-              id_(-1),
-              name_(name),
-              password_(password) {};
+         const std::string &&password);
 
     User(const std::string &&name,
          const std::string &&password,
          const std::string &&email,
-         const std::string &&phone)
-            : is_auth_(false),
-              id_(-1),
-              name_(name),
-              password_(password),
-              email_(email),
-              phone_(phone) {};
+         const std::string &&phone);
 
     ~User() = default;
 
@@ -35,92 +25,23 @@ public:
      * @brief Auth user return user id,
      *        if success return user id, others return 0
      */
-    int Auth() {
-        auto db = DBInstance::instance();
-        db.GetQuery().Execute("use ngserver");
-        std::stringstream ss;
-        ss << "select id from user where ";
-        ss << "name = '" << name_ << "' and ";
-        ss << "password = '" << password_ << "'";
-        ss << ";";
-        auto result = MysqlResult();
-        db.GetQuery().ExecuteQuery(result, ss.str());
-        if (result.Next()) {
-            int id = result.GetInt("id");
-            if (id > 0) {
-                is_auth_ = true;
-                id_ = id;
-                return id;
-            } else {
-                return 0;
-            }
-        }
-        return 0;
-    }
+    int Auth();
 
-    bool SignUpCheck() {
-        bool ok = true;
-        if (name_.empty()) { return false; }
-        else if (password_.empty()) { return false; }
-        else if (email_.empty()) { return false; }
-        else if (phone_.empty()) { return false; }
+    bool SignUpCheck();
 
-        auto db = DBInstance::instance();
-        db.GetQuery().Execute("use ngserver");
-        std::stringstream ss;
-        ss << "select id,name from user where ";
-        ss << "name = '" << name_ << "'";
-        ss << ";";
+    void SetName(std::string &text);
 
-        auto result = MysqlResult();
-        db.GetQuery().ExecuteQuery(result, ss.str());
-        if (result.Next()) {
-            int id = result.GetInt("id");
-            if (id > 0) {
-                DLOG(INFO) << "duplicate name";
-                return false;
-            }
-        }
+    void SetPassword(std::string &text);
 
-        return true;
-    }
+    void SetEmail(std::string &text);
 
-    void SetName(std::string &text) {
-        name_ = text;
-    }
+    void SetPhone(std::string &text);
 
-    void SetPassword(std::string &text) {
-        password_ = text;
-    }
+    bool IsAuth() const;
 
-    void SetEmail(std::string &text) {
-        email_ = text;
-    }
+    int Id() const;
 
-    void SetPhone(std::string &text) {
-        phone_ = text;
-    }
-
-    /**
-     * @brief Get user id, if success return user id, others return -1
-     */
-    bool IsAuth() const {
-        return is_auth_;
-    }
-
-    /**
-     * @brief Get user id
-     */
-    int Id() const {
-        return id_;
-    }
-
-    /**
-     * @brief Get user name
-     */
-    std::string Name() const {
-        return name_;
-    }
+    std::string Name() const;
 
 private:
     bool is_auth_;
