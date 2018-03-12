@@ -13,6 +13,7 @@
 #include "../Proto/Message.pb.h"
 #include "ProtoHandle/ProtoBaseHandle.h"
 
+
 // TODO phtead safe
 template<typename T>
 class MessageQueue {
@@ -36,7 +37,10 @@ public:
         return item;
     }
 
-    int Size() const;
+    int Size() const {
+        auto size = (int) m_queue_.size();
+        return size;
+    }
 
 private:
     std::queue<T> m_queue_;

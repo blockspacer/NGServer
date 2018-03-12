@@ -1,9 +1,5 @@
 #include "MessageQueue.h"
 
-int MessageQueue::Size() const {
-    auto size = (int) m_queue_.size();
-    return size;
-}
 
 std::string Worker::GetMessage() const {
     return msg_;
