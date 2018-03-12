@@ -1,8 +1,1 @@
-<<<<<<< HEAD
-dd if=/dev/zero bs=1M count=30 | nc 127.0.0.1 7000
-dd if=/dev/zero bs=1K count=300000 | nc 127.0.0.1 7000
-=======
-
-
->>>>>>> origin/master
 
