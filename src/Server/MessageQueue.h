@@ -13,7 +13,6 @@
 #include "../Proto/Message.pb.h"
 #include "ProtoHandle/ProtoBaseHandle.h"
 
-
 // TODO phtead safe
 template<typename T>
 class MessageQueue {
@@ -37,10 +36,7 @@ public:
         return item;
     }
 
-    int Size() const {
-        auto size = (int) m_queue_.size();
-        return size;
-    }
+    int Size() const;
 
 private:
     std::queue<T> m_queue_;
@@ -56,13 +52,9 @@ public:
 
     ~Worker() = default;
 
-    std::string GetMessage() const {
-        return msg_;
-    }
+    std::string GetMessage() const;
 
-    ProtoMsg::Message GetProtoMessage() const {
-        return proto_msg_;
-    }
+    ProtoMsg::Message GetProtoMessage() const;
 
 private:
     std::string msg_;
@@ -74,25 +66,9 @@ public:
     explicit Consumer(MessageQueue<std::shared_ptr<Worker>> &queue)
             : m_queue_(queue) {}
 
-    void RunRead() {
-        while (m_queue_.Size() > 0) {
-            auto worker = m_queue_.Remove();
-            auto *proto_msg = new ProtoMsg::Message;
-            *proto_msg = worker->GetProtoMessage();
-            ProtoBaseHandle::Execute(*proto_msg);
-            delete proto_msg;
-        }
-    }
+    void RunRead();
 
-    void RunWrite() {
-        while (m_queue_.Size() > 0) {
-            auto worker = m_queue_.Remove();
-            auto *proto_msg = new ProtoMsg::Message;
-            *proto_msg = worker->GetProtoMessage();
-            ProtoBaseHandle::Execute(*proto_msg);
-            delete proto_msg;
-        }
-    }
+    void RunWrite();
 
 private:
     MessageQueue<std::shared_ptr<Worker>> &m_queue_;

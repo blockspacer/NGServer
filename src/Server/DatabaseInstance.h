@@ -14,17 +14,11 @@ public:
 
     static MysqlConnection conn;
 
-    MysqlConnection GetConnection() {
-        return conn;
-    }
+    MysqlConnection GetConnection();
 
-    MysqlQuery GetQuery() {
-        return query_;
-    }
+    MysqlQuery GetQuery();
 
-    MysqlResult GetResult() {
-        return result_;
-    }
+    MysqlResult GetResult();
 
 private:
     DBInstance() = default;
