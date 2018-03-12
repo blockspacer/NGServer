@@ -27,6 +27,10 @@ public:
      */
     int Auth();
 
+    /**
+     * @brief Check SignUp info is ok,
+     *        if success return true, others return false
+     */
     bool SignUpCheck();
 
     void SetName(std::string &text);
