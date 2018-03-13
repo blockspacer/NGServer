@@ -6,8 +6,6 @@
 using namespace Util;
 
 TEST(Crypt, Temp) {
-
-
     std::string str{"abc"};
     std::string out{};
 
