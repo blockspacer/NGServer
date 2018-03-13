@@ -1,8 +1,6 @@
 #include <glog/logging.h>
 #include <gtest/gtest.h>
 
-#include "../Util/Crypt.h"
-
 GTEST_API_ int main(int argc, char *argv[]) {
 
     testing::InitGoogleTest(&argc, argv);

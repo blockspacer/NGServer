@@ -1,13 +1,12 @@
 #ifndef NGSERVER_CRYPT_H
 #define NGSERVER_CRYPT_H
 
+
 #include <iostream>
 #include <string>
 #include <cstring>
 #include <openssl/sha.h>
 #include <openssl/md5.h>
-
-#include <glog/logging.h>
 
 namespace Util {
 
