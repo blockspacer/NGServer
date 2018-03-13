@@ -7,94 +7,106 @@
 #include <openssl/sha.h>
 #include <openssl/md5.h>
 
+#include <glog/logging.h>
+
 namespace Util {
 
 class Crypt {
 public:
-    // uppercase
-    static std::string GetSha1(std::string s) {
+    /**
+     * @brief Get sha1 lower case string
+     * @param in
+     * @param out
+     */
+    static void GetSha1(std::string &in, std::string &out) {
         SHA_CTX ctx = {0};
         unsigned char hash[SHA_DIGEST_LENGTH];
         char hashc[SHA_DIGEST_LENGTH];
-        int i = 0;
 
-        const unsigned char *s3 = new unsigned char[s.size() + 1];;
-        strcpy((char *) s3, s.c_str());
+        const unsigned char *s3 = new unsigned char[in.size() + 1];;
+        strcpy((char *) s3, in.c_str());
 
         SHA1_Init(&ctx);
-        SHA1_Update(&ctx, s3, s.size());
+        SHA1_Update(&ctx, s3, in.size());
         SHA1_Final(hash, &ctx);
 
+        int i = 0;
         for (i = 0; i < SHA_DIGEST_LENGTH; i++) {
             sprintf(&hashc[i * 2], "%.2x", (int) hash[i]);
         }
 
-        return (std::string) hashc;
+        out = (std::string) hashc;
     }
 
-    static std::string DebugGetSha1(std::string s) {
+    /**
+     * @brief Another method to get sha1 lower case string
+     * @param in
+     * @param out
+     */
+    static void DebugGetSha1(std::string &in, std::string &out) {
         unsigned char hash[SHA_DIGEST_LENGTH];
         char hashc[SHA_DIGEST_LENGTH];
 
-        const unsigned char *s3 = new unsigned char[s.size() + 1];
-        strcpy((char *) s3, s.c_str());
+        const unsigned char *s3 = new unsigned char[in.length() + 1];
+        strcpy((char *) s3, in.c_str());
 
-        SHA1(s3, s.size(), hash);
+        SHA1(s3, in.length(), hash);
 
         int i = 0;
         for (i = 0; i < SHA_DIGEST_LENGTH; i++) {
             sprintf(&hashc[i * 2], "%.2x", (int) hash[i]);
         }
 
-        return (std::string) hashc;
+        out = (std::string) hashc;
     }
 
-    // lower case
-    static std::string GetMD5(std::string s) {
+    /**
+     * @brief Get md5 lower case string
+     * @param in
+     * @param out
+     */
+    static void GetMD5(std::string &in, std::string &out) {
         MD5_CTX ctx = {0};
-        unsigned char outmd[MD5_DIGEST_LENGTH];
-        char hashc[MD5_DIGEST_LENGTH];
-        int i = 0;
-
-        const unsigned char *s3 = new unsigned char[s.size() + 1];;
-        strcpy((char *) s3, s.c_str());
-
-        MD5_Init(&ctx);
-        MD5_Update(&ctx, s3, 3);
-        MD5_Final(outmd, &ctx);
-
-        for (i = 0; i < MD5_DIGEST_LENGTH; i++) {
-            sprintf(&hashc[i * 2], "%.2X", outmd[i]);
-        }
-
-        return ((std::string) hashc);
-    }
-
-    static std::string DebugGetMD5(std::string s) {
         unsigned char hash[MD5_DIGEST_LENGTH];
         char hashc[MD5_DIGEST_LENGTH];
-//
-//        const unsigned char *s3 = new unsigned char[s.size() + 1];
-//        strcpy((char *) s3, s.c_str());
-//
-//        MD5(s3, s.size(), hash);
-//
-//        for (int i = 0; i < 16; i++) {
-//            sprintf(&hashc[i * 2], "%.2x", (int) hash[i]);
-//        }
 
-        unsigned char data[] = "abc";
-        unsigned char md[16];
-        int i;
-        char tmp[3] = {};
-        char buf[16] = {};
-        MD5(data, 3, md);
-        for (i = 0; i < 16; i++) {
-            printf("%.2x", md[i]);
+        const unsigned char *s3 = new unsigned char[in.length() + 1];;
+        strcpy((char *) s3, in.c_str());
+
+        MD5_Init(&ctx);
+        MD5_Update(&ctx, s3, in.length());
+        MD5_Final(hash, &ctx);
+
+        int i = 0;
+        for (i = 0; i < MD5_DIGEST_LENGTH; i++) {
+            sprintf(&hashc[i * 2], "%.2x", (int) hash[i]);
         }
-        printf("\n");
 
-        return (std::string) "";
+        out = (std::string) hashc;
+    }
+
+    /**
+     * @todo the code result[MD5_DIGEST_LENGTH + 1], if not +1 will cause error invalid pointer
+     * @brief Another method to get md5 string
+     * @param in
+     * @param out
+     */
+    static void DebugGetMD5(std::string &in, std::string &out) {
+        unsigned char result[MD5_DIGEST_LENGTH + 1] = {0};
+        char hashc[MD5_DIGEST_LENGTH] = {0};
+
+        const unsigned char *s3 = new unsigned char[in.length() + 1];
+        strcpy((char *) s3, in.c_str());
+
+        MD5(s3, 3, result);
+
+        int i = 0;
+        for (i = 0; i < MD5_DIGEST_LENGTH; i++) {
+            sprintf(&hashc[i * 2], "%.2x", result[i]);
+        }
+
+        out = (std::string) hashc;
+
     }
 };
 
