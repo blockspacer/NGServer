@@ -40,6 +40,7 @@ target_link_libraries(Test
         uuid
         mysqlcppconn
         ssl
+        pthread
         crypto
         Util
         uvw)

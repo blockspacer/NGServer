@@ -10,21 +10,18 @@ namespace Util {
 
 class UUID {
 public:
-
-    static void GetUuid(uuid_t &uuid) {
-        uuid_generate(uuid);
-    }
-
-    static std::string GetUuidString() {
-        std::string uuid_string = "";
+    /**
+     * @brief Get uuid, eg: ec981df5-3909-46ad-af6e-a8df56273db3
+     * @param out
+     */
+    static void GetUuidString(std::string &out) {
         uuid_t uuid = {};
         uuid_generate(uuid);
-        char out[36];
-        memset(out, 0x00, sizeof(out));
-        uuid_unparse_lower(uuid, out);
-        std::string str(out);
-        uuid_string = out;
-        return uuid_string;
+        char in[36];
+        memset(in, 0x00, sizeof(in));
+        uuid_unparse_lower(uuid, in);
+        std::string str(in);
+        out = in;
     }
 };
 
