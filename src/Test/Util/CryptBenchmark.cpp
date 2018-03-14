@@ -43,6 +43,3 @@ static void BM_DebugGetSha1(benchmark::State &state) {
 }
 
 BENCHMARK(BM_DebugGetSha1);
-
-
-// BENCHMARK_MAIN();

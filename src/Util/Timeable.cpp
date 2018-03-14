@@ -13,6 +13,15 @@ const double PRECISION = PRECISION_MS;          // use millisecond precision
 }
 
 namespace Util {
+
+Timeable::Timeable() {
+    memset(last_begin_time_, 0, sizeof(last_begin_time_));
+    memset(number_of_timers_, 0, sizeof(number_of_timers_));
+    for (auto &item :total_time_) {
+        item = 0.0;
+    }
+}
+
 void Timeable::BeginTimer(TimerIndex timer) {
     assert(timer < NUM_TIMER_INDEXES);
     timeval tv = {};
@@ -36,14 +45,6 @@ double Timeable::GetTotalTime(TimerIndex timer) {
 double Timeable::GetAverageTime(TimerIndex timer) {
     assert(timer < NUM_TIMER_INDEXES);
     return (total_time_[timer] / PRECISION) / double(number_of_timers_[timer]);
-}
-
-Timeable::Timeable() {
-    memset(last_begin_time_, 0, sizeof(last_begin_time_));
-    memset(number_of_timers_, 0, sizeof(number_of_timers_));
-    for (auto &item :total_time_) {
-        item = 0.0;
-    }
 }
 
 Timeable::Timeable(const Timeable &timer) {

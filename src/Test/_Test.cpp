@@ -14,8 +14,11 @@ int main(int argc, char *argv[]) {
     auto result = RUN_ALL_TESTS();
 
     // LOG(INFO) << "Running benchmark in Test directory";
+
     ::benchmark::Initialize(&argc, argv);
     ::benchmark::RunSpecifiedBenchmarks();
 
     return result;
 }
+
+// BENCHMARK_MAIN();
