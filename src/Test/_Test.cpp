@@ -1,7 +1,8 @@
 #include <glog/logging.h>
 #include <gtest/gtest.h>
+#include <benchmark/benchmark.h>
 
-GTEST_API_ int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 
     testing::InitGoogleTest(&argc, argv);
 
@@ -9,7 +10,12 @@ GTEST_API_ int main(int argc, char *argv[]) {
     google::SetStderrLogging(google::GLOG_INFO);
     FLAGS_colorlogtostderr = true;
 
-    LOG(INFO) << "Running gtest in Test directory";
+    // LOG(INFO) << "Running gtest in Test directory";
+    auto result = RUN_ALL_TESTS();
 
-    return RUN_ALL_TESTS();
+    // LOG(INFO) << "Running benchmark in Test directory";
+    ::benchmark::Initialize(&argc, argv);
+    ::benchmark::RunSpecifiedBenchmarks();
+
+    return result;
 }

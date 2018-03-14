@@ -5,7 +5,7 @@
 
 using namespace Database;
 
-TEST(MysqlConnection, Temp) {
+TEST(DISABLED_MysqlConnection, Temp) {
     auto conn = MysqlConnection("tcp://127.0.0.1:3306", "root", "1234", "mysql");
 
     conn.Connect();

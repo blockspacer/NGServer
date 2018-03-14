@@ -5,7 +5,7 @@
 
 using namespace Util;
 
-TEST(Timeable, Temp) {
+TEST(DISABLED_Timeable, Temp) {
     auto ta = Timeable();
 
     ta.BeginTimer(Timeable::TIMER_ONE);
