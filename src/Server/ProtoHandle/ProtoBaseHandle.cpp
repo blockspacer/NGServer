@@ -5,7 +5,7 @@
 #include <TimeStamp.h>
 
 #include "../Global.h"
-#include "StringConversion.h"
+#include "Conv.h"
 #include "../DatabaseInstance.h"
 #include "../App/User.h"
 #include "../MessagePacket.h"

@@ -3,7 +3,7 @@
 
 
 #include <Message.pb.h>
-#include <StringConversion.h>
+#include <Conv.h>
 
 typedef struct MessageFormat {
     char *data;

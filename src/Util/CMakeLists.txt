@@ -5,8 +5,8 @@ link_directories(/usr/local/lib/glog/lib)
 add_library(Util
         RunTime.cpp
         RunTime.h
-        StringConversion.h
-        StringConversion.cpp
+        Conv.h
+        Conv.cpp
         UUID.cpp
         UUID.h
         Observer.cpp
@@ -16,7 +16,7 @@ add_library(Util
         Timeable.cpp
         Timeable.h
         TimeStamp.cpp
-        TimeStamp.h)
+        TimeStamp.h String.cpp String.h)
 
 target_link_libraries(Util
         uv

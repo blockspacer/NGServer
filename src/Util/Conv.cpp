@@ -1,32 +1,15 @@
-#include "StringConversion.h"
+#include "Conv.h"
 
 namespace Util {
 
-template<typename Out>
-void Split(const std::string &s, char delim, Out result) {
-    std::stringstream ss(s);
-    std::string item;
-    while (std::getline(ss, item, delim)) {
-        *(result++) = item;
-    }
-}
-
-std::vector<std::string> Split(const std::string &s, char delim) {
-    std::vector<std::string> elems;
-    Util::Split(s, delim, std::back_inserter(elems));
-    return elems;
-}
-
-// string to char*
-char *Str2char(std::string &str) {
+char *StringToChar(std::string &str) {
     auto cstr = new char[str.length() + 1];
     strcpy(cstr, str.c_str());
     return cstr;
 }
 
-// string to int
-int Str2int(std::string s) {
-    return std::stoi(s);
+int StringToInt(std::string str) {
+    return std::stoi(str);
 }
 
 void SerializeInt32(char (&buf)[4], int32_t val) {
