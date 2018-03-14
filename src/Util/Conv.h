@@ -29,14 +29,14 @@ char *StringToChar(std::string &str);
 int StringToInt(std::string str);
 
 /**
- * @brief Conversions from char[4] types to int32 types.
+ * @brief Conversions from int32 types to char[4] types.
  * @param buf
  * @param val
  */
 void SerializeInt32(char (&buf)[4], int32_t val);
 
 /**
- * @brief Conversions from int32 types to char[4] types.
+ * @brief Conversions from char[4] types to int32 types.
  * @param buf
  * @param val
  */
