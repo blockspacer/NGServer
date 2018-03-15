@@ -1,5 +1,6 @@
 add_subdirectory(Server)
 add_subdirectory(Database)
+add_subdirectory(FSM)
 add_subdirectory(Test)
 add_subdirectory(Util)
 add_subdirectory(LuaState)

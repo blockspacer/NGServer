@@ -81,7 +81,7 @@ void ClientDisconnect(uvw::TcpHandle &tcp) {
     int count = 0;
     tcp.loop().walk([&count](uvw::BaseHandle &handle) {
         if (handle.type() == uvw::HandleType::TCP) {
-            LOG(INFO) << "uvw::HandleType::TCP";
+            // LOG(INFO) << "uvw::HandleType::TCP";
         }
         ++count;
     });
@@ -115,7 +115,7 @@ void ListenServer(uvw::Loop &loop) {
                                              uvw::TcpHandle &client) {
             LOG(INFO) << "client uvw::ErrorEvent";
             ClientDisconnect(client);
-            ptr->close();
+            // ptr->close();
         });
 
         client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()]
