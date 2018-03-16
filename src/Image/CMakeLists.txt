@@ -2,7 +2,7 @@ link_directories(/usr/local/lib/gtest/)
 link_directories(/usr/local/lib/glog/lib)
 
 add_executable(Image
-        _FSM.cpp _Image.cpp)
+        Temp.cpp _Image.cpp)
 
 target_link_libraries(Image
         gtest

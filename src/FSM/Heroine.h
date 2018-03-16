@@ -58,6 +58,8 @@ public:
 
     virtual HeroineState *handleInput(Heroine &heroine, Input input) = 0;
 
+    // virtual HeroineState *changeState() = 0;
+
     virtual void update(Heroine &heroine) = 0;
 
     virtual void enter(Heroine &heroine) = 0;
@@ -69,9 +71,11 @@ public:
 
 class DuckingState : public HeroineState {
 public:
-    DuckingState() : chargeTime_(0) {}
+    DuckingState()
+            : chargeTime_(0) {}
 
-    explicit DuckingState(Heroine &heroine) {
+    explicit DuckingState(Heroine &heroine)
+            : chargeTime_(0) {
         enter(heroine);
     }
 

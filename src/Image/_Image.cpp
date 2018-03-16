@@ -1,10 +1,57 @@
 #include <GLFW/glfw3.h>
 #include <zconf.h>
+#include <glog/logging.h>
+
 
 const int WIDTH = 480;
 const int HEIGHT = 320;
 
-int main(void) {
+static void error_callback(int error, const char *description) {
+
+}
+
+void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        switch (key) {
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(window, GL_TRUE);
+                break;
+            case GLFW_KEY_SPACE:
+                LOG(INFO) << "Press Space";
+                break;
+            default:
+                break;
+        }
+    } else if (action == GLFW_RELEASE) {
+        switch (key) {
+            case GLFW_KEY_SPACE:
+                LOG(INFO) << "Release Space";
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        switch (button) {
+            case GLFW_MOUSE_BUTTON_LEFT:
+                LOG(INFO) << "Mosue left button clicked!";
+                break;
+            case GLFW_MOUSE_BUTTON_MIDDLE:
+                LOG(INFO) << "Mosue middle button clicked!";
+                break;
+            case GLFW_MOUSE_BUTTON_RIGHT:
+                LOG(INFO) << "Mosue right button clicked!";
+                break;
+            default:
+                return;
+        }
+    }
+}
+
+int main(int argc, char *argv[]) {
     GLFWwindow *window;
 
     /* Initialize the library */
@@ -20,6 +67,8 @@ int main(void) {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+
+    glfwSetKeyCallback(window, key_callback);
 
     float i = 0.1;
 
@@ -56,15 +105,14 @@ int main(void) {
 
 
         glColor3f(i, 0.0, 0.0);    // Red
-        i=i+0.1;
+        i = i + 0.1;
         if (i > 1) {
             i = 0.1;
         }
         usleep(1000 * 100);
 
         glVertex3f(-0.5, 0.0, 0.0);
-        glVertex3f(i, 0, 0);
-//        glVertex3f(0.5, -0.5, 0);
+        glVertex3f(0.5, 0, 0);
         glEnd();
 
         /* Swap front and back buffers */

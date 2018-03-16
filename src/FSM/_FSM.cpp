@@ -7,6 +7,7 @@
 
 auto hero1 = Heroine();
 
+// 10hz
 void Update() {
     for (int i = 0; i < 1000; i++) {
         hero1.update();
