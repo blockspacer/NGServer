@@ -8,7 +8,6 @@ EquipmentState HeroineState::equipment = {};
 
 HeroineState *DuckingState::handleInput(Heroine &heroine, Input input) {
     if (input == Input::RELEASE_DOWN) {
-        heroine.state_ = &HeroineState::standing;
         exit(heroine);
         return new StandingState(heroine);
     }
@@ -16,15 +15,15 @@ HeroineState *DuckingState::handleInput(Heroine &heroine, Input input) {
 }
 
 void DuckingState::update(Heroine &heroine) {
-    chargeTime_+=0.1;
+    chargeTime_ += 0.1;
     if (chargeTime_ > MAX_CHARGE) {
         heroine.superBomb();
     }
 }
 
 void DuckingState::enter(Heroine &heroine) {
-    heroine.setGraphics(Image::DUCK);
     LOG(INFO) << "enter " << name();
+    heroine.setGraphics(Image::DUCK);
 }
 
 void DuckingState::exit(Heroine &heroine) {
@@ -37,11 +36,9 @@ std::string DuckingState::name() {
 
 HeroineState *StandingState::handleInput(Heroine &heroine, Input input) {
     if (input == Input::PRESS_B) {
-        heroine.state_ = &HeroineState::jumping;
         exit(heroine);
         return new JumpingState(heroine);
     } else if (input == Input::PRESS_DOWN) {
-        heroine.state_ = &HeroineState::ducking;
         exit(heroine);
         return new DuckingState(heroine);
     }
@@ -53,8 +50,8 @@ void StandingState::update(Heroine &heroine) {
 }
 
 void StandingState::enter(Heroine &heroine) {
-    heroine.setGraphics(Image::STAND);
     LOG(INFO) << "enter " << name();
+    heroine.setGraphics(Image::STAND);
 }
 
 void StandingState::exit(Heroine &heroine) {
@@ -67,7 +64,6 @@ std::string StandingState::name() {
 
 HeroineState *JumpingState::handleInput(Heroine &heroine, Input input) {
     if (input == Input::PRESS_DOWN) {
-        heroine.state_ = &HeroineState::diving;
         exit(heroine);
         return new DivingState(heroine);
     }
@@ -79,14 +75,15 @@ void JumpingState::update(Heroine &heroine) {
     if (jump_time_ < 2.0) {
         jump_time_ += 0.1;
     } else {
-        heroine.state_ = &HeroineState::standing;
         exit(heroine);
+        heroine.state_ = new StandingState(heroine);
+        // return new StandingState(heroine);
     }
 }
 
 void JumpingState::enter(Heroine &heroine) {
-    heroine.setGraphics(Image::JUMP);
     LOG(INFO) << "enter " << name();
+    heroine.setGraphics(Image::JUMP);
 }
 
 void JumpingState::exit(Heroine &heroine) {
@@ -107,8 +104,8 @@ void DivingState::update(Heroine &heroine) {
 }
 
 void DivingState::enter(Heroine &heroine) {
-    heroine.setGraphics(Image::DIVE);
     LOG(INFO) << "enter " << name();
+    heroine.setGraphics(Image::DIVE);
 }
 
 void DivingState::exit(Heroine &heroine) {
@@ -146,7 +143,6 @@ void Heroine::handleInput(Input input) {
     HeroineState *state = state_->handleInput(*this, input);
     equipment_->handleInput(*this, input);
     if (state != nullptr) {
-        // delete state_;
         state_ = state;
     }
 }
