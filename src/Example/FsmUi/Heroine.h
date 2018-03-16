@@ -182,6 +182,7 @@ public:
     void exit(Heroine &heroine) override;
 
     std::string name() override;
+
 };
 
 class Heroine {

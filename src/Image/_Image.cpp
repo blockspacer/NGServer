@@ -2,9 +2,10 @@
 #include <zconf.h>
 #include <glog/logging.h>
 
+#include <math.h>
 
-const int WIDTH = 480;
-const int HEIGHT = 320;
+const int WIDTH = 720;
+const int HEIGHT = 720;
 
 static void error_callback(int error, const char *description) {
 
@@ -51,6 +52,63 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
     }
 }
 
+void DrawTriangle() {
+    glBegin(GL_TRIANGLES);
+
+    glColor3f(1.0, 0.0, 0.0);       // Red
+    glVertex3f(-0.75, -0.5, 0.0);        // up point
+
+    glColor3f(0.0, 1.0, 0.0);       // Green
+    glVertex3f(-1.0, -1.0, 0.0);    // bottom left
+
+    glColor3f(0.0, 0.0, 1.0);       // Blue
+    glVertex3f(-0.5, -1, 0.0);     // bootom right
+
+    glEnd();
+}
+
+void DrawPolygon() {
+    glBegin(GL_POLYGON);
+
+    glColor3f(0.0, 1.0, 0.0);       // Green
+
+    glVertex3f(0.25, 0.25, 0.0);
+    glVertex3f(0.75, 0.25, 0.0);
+    glVertex3f(0.75, 0.75, 0.0);
+    glVertex3f(0.25, 0.75, 0.0);
+
+    glEnd();
+}
+
+void DrawLine() {
+    glLineWidth(2.5);
+
+    glBegin(GL_LINES);
+
+    glColor3f(0.5, 0.0, 0.0);    // Red
+
+    glVertex3f(-0.5, 0.0, 0.0);
+    glVertex3f(0.5, 0, 0);
+
+    glEnd();
+}
+
+void DrawCircle() {
+    int n = 120;
+    float PI = 3.1415926f;
+    float R = 0.2f;
+
+    glColor3f(1, 0.0, 0.0);    // Red
+
+    glBegin(GL_POLYGON);
+
+    for (int i = 0; i < n; i++) {
+        glVertex2f(-0.5 + R * cos(2 * PI * i / n), 0.5 + R * sin(2 * PI * i / n));
+    }
+    glEnd();
+
+}
+
 int main(int argc, char *argv[]) {
     GLFWwindow *window;
 
@@ -70,50 +128,16 @@ int main(int argc, char *argv[]) {
 
     glfwSetKeyCallback(window, key_callback);
 
-    float i = 0.1;
-
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
-        /* Draw a triangle */
-        glBegin(GL_TRIANGLES);
 
-        glColor3f(1.0, 0.0, 0.0);       // Red
-        glVertex3f(-0.5, 0, 0.0);        // up point
+        DrawTriangle();
 
-        glColor3f(0.0, 1.0, 0.0);       // Green
-        glVertex3f(-1.0, -1.0, 0.0);    // bottom left
+        DrawPolygon();
 
-        glColor3f(0.0, 0.0, 1.0);       // Blue
-        glVertex3f(0.0, -1.0, 0.0);     // bootom right
+        DrawLine();
 
-        glEnd();
-
-        /* Draw a polygon */
-        glBegin(GL_POLYGON);
-
-        glColor3f(0.0, 1.0, 0.0);       // Green
-
-        glVertex3f(0.25, 0.25, 0.0);
-        glVertex3f(0.75, 0.25, 0.0);
-        glVertex3f(0.75, 0.75, 0.0);
-        glVertex3f(0.25, 0.75, 0.0);
-
-        glEnd();
-        glLineWidth(2.5);
-
-        glBegin(GL_LINES);
-
-
-        glColor3f(i, 0.0, 0.0);    // Red
-        i = i + 0.1;
-        if (i > 1) {
-            i = 0.1;
-        }
-        usleep(1000 * 100);
-
-        glVertex3f(-0.5, 0.0, 0.0);
-        glVertex3f(0.5, 0, 0);
-        glEnd();
+        DrawCircle();
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

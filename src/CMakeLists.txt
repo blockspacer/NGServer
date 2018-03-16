@@ -1,6 +1,7 @@
 add_subdirectory(BTree)
 add_subdirectory(Server)
 add_subdirectory(Database)
+add_subdirectory(Example)
 add_subdirectory(FSM)
 add_subdirectory(Image)
 add_subdirectory(Test)
