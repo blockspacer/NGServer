@@ -35,12 +35,15 @@ std::string DuckingState::name() {
 }
 
 HeroineState *StandingState::handleInput(Heroine &heroine, Input input) {
-    if (input == Input::PRESS_B) {
+    if (input == Input::PRESS_SPACE) {
         exit(heroine);
         return new JumpingState(heroine);
     } else if (input == Input::PRESS_DOWN) {
         exit(heroine);
         return new DuckingState(heroine);
+    } else if (input == Input::PRESS_LEFT || input == Input::PRESS_RIGHT) {
+        exit(heroine);
+        return new MovingState(heroine);
     }
     return nullptr;
 }
@@ -114,6 +117,36 @@ void DivingState::exit(Heroine &heroine) {
 
 std::string DivingState::name() {
     return "DivingState";
+}
+
+HeroineState *MovingState::handleInput(Heroine &heroine, Input input) {
+    if (input == Input::RELEASE_LEFT || input == Input::RELEASE_RIGHT) {
+        exit(heroine);
+        return new StandingState(heroine);
+    } else if (input == Input::PRESS_DOWN) {
+        exit(heroine);
+        return new DuckingState(heroine);
+    } else if (input == Input::PRESS_SPACE) {
+        exit(heroine);
+        return new DuckingState(heroine);
+    }
+    return nullptr;
+}
+
+void MovingState::update(Heroine &heroine) {
+
+}
+
+void MovingState::enter(Heroine &heroine) {
+
+}
+
+void MovingState::exit(Heroine &heroine) {
+
+}
+
+std::string MovingState::name() {
+    return "MovingState";
 }
 
 HeroineState *EquipmentState::handleInput(Heroine &heroine, Input input) {

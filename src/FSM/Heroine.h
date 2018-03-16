@@ -11,17 +11,17 @@
 // case '2':
 // hero1.handleInput(Input::RELEASE_DOWN);
 // case '3':
-// hero1.handleInput(Input::PRESS_B);
+// hero1.handleInput(Input::PRESS_SPACE);
 
 enum class State {
     STANDING, // DUCKING -> RELEASE_DOWN
-    JUMPING,  // STANDING -> PRESS_B
+    JUMPING,  // STANDING -> PRESS_SPACE
     DUCKING,  // STANDING -> PRESS_DOWN
     DIVING    // JUMPING -> PRESS_DOWN
 };
 
 enum class Input {
-    PRESS_B,
+    PRESS_SPACE,
     PRESS_DOWN,
     RELEASE_DOWN,
     FIRE

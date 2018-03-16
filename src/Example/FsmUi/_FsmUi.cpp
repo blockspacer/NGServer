@@ -178,7 +178,15 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
                 break;
             case GLFW_KEY_SPACE:
                 LOG(INFO) << "Press Space";
-                hero1.handleInput(Input::PRESS_B);
+                hero1.handleInput(Input::PRESS_SPACE);
+                break;
+            case GLFW_KEY_LEFT:
+                LOG(INFO) << "Press Left";
+                hero1.handleInput(Input::PRESS_LEFT);
+                break;
+            case GLFW_KEY_RIGHT:
+                LOG(INFO) << "Press Right";
+                hero1.handleInput(Input::PRESS_RIGHT);
                 break;
             default:
                 break;
@@ -192,6 +200,13 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
             case GLFW_KEY_SPACE:
                 LOG(INFO) << "Release Space";
                 break;
+            case GLFW_KEY_LEFT:
+                LOG(INFO) << "Release Left";
+                hero1.handleInput(Input::RELEASE_LEFT);
+                break;
+            case GLFW_KEY_RIGHT:
+                LOG(INFO) << "Release Right";
+                hero1.handleInput(Input::RELEASE_RIGHT);
             default:
                 break;
         }
@@ -339,6 +354,35 @@ void DrawFire(GLuint &img) {
     glEnd();
 }
 
+void DrawMoving(GLuint &img) {
+    if (hero1.state_->name() == "MovingState") {
+        glColor3f(1, 1, 1);
+    } else {
+        glColor3f(0.5, 0.5, 0.5);
+    }
+
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, img);
+
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0f, 0.0f); // left bottom
+    glVertex2f(-0.4f, 0.3f);
+
+    glTexCoord2f(1.0f, 0.0f); // right bottom
+    glVertex2f(0.0f, 0.3f);
+
+    glTexCoord2f(1.0f, 1.0f); // right top
+    glVertex2f(0.0f, 0.5f);
+
+    glTexCoord2f(0.0f, 1.0f); // left top
+    glVertex2f(-0.4f, 0.5f);
+
+    glEnd();
+}
+
+// update game object
 void Update() {
     for (int i = 0; i < 1000; i++) {
         hero1.update();
@@ -381,6 +425,7 @@ int main(int argc, char *argv[]) {
     auto ducking = png_texture_load("/home/me/Pictures/ducking.png", &w1, &h1);
     auto jumping = png_texture_load("/home/me/Pictures/jumping.png", &w1, &h1);
     auto fire = png_texture_load("/home/me/Pictures/fire.png", &w1, &h1);
+    auto moving = png_texture_load("/home/me/Pictures/moving.png", &w1, &h1);
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
@@ -390,6 +435,7 @@ int main(int argc, char *argv[]) {
         DrawDucking(ducking);
         DrawJumping(jumping);
         DrawFire(fire);
+        DrawMoving(moving);
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

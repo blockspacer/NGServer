@@ -35,7 +35,7 @@ std::string DuckingState::name() {
 }
 
 HeroineState *StandingState::handleInput(Heroine &heroine, Input input) {
-    if (input == Input::PRESS_B) {
+    if (input == Input::PRESS_SPACE) {
         exit(heroine);
         return new JumpingState(heroine);
     } else if (input == Input::PRESS_DOWN) {
