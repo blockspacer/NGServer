@@ -9,8 +9,8 @@ auto hero1 = Heroine();
 
 void Update() {
     for (int i = 0; i < 1000; i++) {
-        LOG(INFO) << "Update " << hero1.state_->name();
-        sleep(1);
+        hero1.update();
+        usleep(1000 * 100);
     }
 }
 

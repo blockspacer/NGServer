@@ -32,7 +32,7 @@ enum class Image {
     STAND
 };
 
-static int const MAX_CHARGE = 0;
+static float const MAX_CHARGE = 2;
 
 class Heroine;
 
@@ -85,12 +85,10 @@ public:
 
     void exit(Heroine &heroine) override;
 
-    std::string name() override {
-        return "DuckingState";
-    }
+    std::string name() override;
 
 private:
-    int chargeTime_;
+    float chargeTime_;
 };
 
 class StandingState : public HeroineState {
@@ -111,9 +109,7 @@ public:
 
     void exit(Heroine &heroine) override;
 
-    std::string name() override {
-        return "StandingState";
-    }
+    std::string name() override;
 };
 
 class JumpingState : public HeroineState {
@@ -134,14 +130,15 @@ public:
 
     void exit(Heroine &heroine) override;
 
-    std::string name() override {
-        return "JumpingState";
-    }
+    std::string name() override;
+
+private:
+    float jump_time_ = 0;
 };
 
 class DivingState : public HeroineState {
 public:
-    DivingState()= default;
+    DivingState() = default;
 
     explicit DivingState(Heroine &heroine) {
         enter(heroine);
@@ -157,9 +154,7 @@ public:
 
     void exit(Heroine &heroine) override;
 
-    std::string name() override {
-        return "DivingState";
-    }
+    std::string name() override;
 };
 
 class EquipmentState : public HeroineState {
@@ -180,34 +175,22 @@ public:
 
     void exit(Heroine &heroine) override;
 
-    std::string name() override {
-        return "EquipmentState";
-    }
+    std::string name() override;
 };
 
 class Heroine {
 public:
-    Heroine() {
-        state_ = &HeroineState::standing;
-        equipment_ = &HeroineState::equipment;
-    };
+    Heroine();
 
-    virtual void handleInput(Input input) {
-        HeroineState *state = state_->handleInput(*this, input);
-        equipment_->handleInput(*this, input);
-        if (state != nullptr) {
-            // delete state_;
-            state_ = state;
-        }
-    }
+    void init();
 
-    virtual void update() {
-        state_->update(*this);
-    }
+    virtual void handleInput(Input input);
 
-    void superBomb() { LOG(INFO) << "superBomb"; }
+    virtual void update();
 
-    void setGraphics(Image image) { LOG(INFO) << "setGraphics"; }
+    void superBomb();
+
+    void setGraphics(Image image);
 
     HeroineState *state_;
     HeroineState *equipment_;
