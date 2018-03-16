@@ -183,6 +183,9 @@ public:
 
     std::string name() override;
 
+    bool fire_ = false;
+
+    float fire_interval_ = 0.0;
 };
 
 class Heroine {

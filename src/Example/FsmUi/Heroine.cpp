@@ -118,13 +118,21 @@ std::string DivingState::name() {
 
 HeroineState *EquipmentState::handleInput(Heroine &heroine, Input input) {
     if (input == Input::FIRE) {
-        LOG(INFO) << "FIRE";
+        if (fire_interval_ <= 0.0) {
+            fire_interval_ = 0.5;
+            fire_ = true;
+        }
     }
     return nullptr;
 }
 
 void EquipmentState::update(Heroine &heroine) {
-
+    if (fire_) {
+        fire_interval_ -= 0.1;
+    }
+    if (fire_interval_ <= 0.0) {
+        fire_ = false;
+    }
 }
 
 void EquipmentState::enter(Heroine &heroine) {
@@ -136,6 +144,9 @@ void EquipmentState::exit(Heroine &heroine) {
 }
 
 std::string EquipmentState::name() {
+    if (fire_) {
+        return "Fire";
+    }
     return "EquipmentState";
 }
 
@@ -149,6 +160,7 @@ void Heroine::handleInput(Input input) {
 
 void Heroine::update() {
     state_->update(*this);
+    equipment_->update(*this);
 }
 
 Heroine::Heroine() {

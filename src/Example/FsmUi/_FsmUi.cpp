@@ -1,6 +1,3 @@
-// This one file (png_texture.cpp) is free and unencumbered software
-// released into the public domain.
-
 #include <GL/gl.h>
 #include <png.h>
 #include <string>
@@ -11,6 +8,11 @@
 #include <thread>
 
 #include "Heroine.h"
+
+const int WIDTH = 800;
+const int HEIGHT = 800;
+
+auto hero1 = Heroine();
 
 GLuint png_texture_load(const char *file_name, int *width, int *height) {
     png_byte header[8];
@@ -159,12 +161,6 @@ GLuint png_texture_load(const char *file_name, int *width, int *height) {
     fclose(fp);
     return texture;
 }
-
-
-const int WIDTH = 800;
-const int HEIGHT = 800;
-
-auto hero1 = Heroine();
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS) {
