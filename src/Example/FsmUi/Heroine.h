@@ -6,20 +6,6 @@
 
 #include <glog/logging.h>
 
-// case '1':
-// hero1.handleInput(Input::PRESS_DOWN);
-// case '2':
-// hero1.handleInput(Input::RELEASE_DOWN);
-// case '3':
-// hero1.handleInput(Input::PRESS_SPACE);
-
-enum class State {
-    STANDING, // DUCKING -> RELEASE_DOWN
-    JUMPING,  // STANDING -> PRESS_SPACE
-    DUCKING,  // STANDING -> PRESS_DOWN
-    DIVING    // JUMPING -> PRESS_DOWN
-};
-
 enum class Input {
     PRESS_SPACE,
     PRESS_DOWN,
@@ -40,26 +26,21 @@ enum class Image {
 
 static float const MAX_CHARGE = 2;
 
+class FsmState {
+public:
+    virtual ~FsmState() = default;
+
+};
+
+class FsmManager {
+public:
+private:
+};
+
 class Heroine;
-
-class StandingState;
-
-class DuckingState;
-
-class JumpingState;
-
-class DivingState;
-
-class EquipmentState;
 
 class HeroineState {
 public:
-    static StandingState standing;
-    static DuckingState ducking;
-    static JumpingState jumping;
-    static DivingState diving;
-    static EquipmentState equipment;
-
     virtual ~HeroineState() = default;
 
     virtual HeroineState *handleInput(Heroine &heroine, Input input) = 0;

@@ -1,11 +1,5 @@
 #include "Heroine.h"
 
-StandingState HeroineState::standing = {};
-JumpingState HeroineState::jumping = {};
-DuckingState HeroineState::ducking = {};
-DivingState HeroineState::diving = {};
-EquipmentState HeroineState::equipment = {};
-
 HeroineState *DuckingState::handleInput(Heroine &heroine, Input input) {
     if (input == Input::RELEASE_DOWN) {
         exit(heroine);
@@ -197,8 +191,8 @@ void Heroine::update() {
 }
 
 Heroine::Heroine() {
-    state_ = &HeroineState::standing;
-    equipment_ = &HeroineState::equipment;
+    state_ = new StandingState();
+    equipment_ =new EquipmentState();
 }
 
 void Heroine::superBomb() {
