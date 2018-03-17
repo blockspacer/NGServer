@@ -5,7 +5,7 @@ add_executable(FsmUi
         _FsmUi.cpp
         Heroine.h
         Heroine.cpp
-        libpng_test.cpp)
+        libpng_test.cpp Fsm.h)
 
 target_link_libraries(FsmUi
         gtest

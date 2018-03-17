@@ -6,6 +6,8 @@
 
 #include <glog/logging.h>
 
+#include "Fsm.h"
+
 enum class Input {
     PRESS_SPACE,
     PRESS_DOWN,
@@ -25,17 +27,6 @@ enum class Image {
 };
 
 static float const MAX_CHARGE = 2;
-
-class FsmState {
-public:
-    virtual ~FsmState() = default;
-
-};
-
-class FsmManager {
-public:
-private:
-};
 
 class Heroine;
 
@@ -212,7 +203,7 @@ public:
     HeroineState *equipment_;
 
 private:
-
+    std::stack<HeroineState> state_history_;
 };
 
 

@@ -384,7 +384,7 @@ void DrawMoving(GLuint &img) {
 
 // update game object
 void Update() {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 10000; i++) {
         hero1.update();
         usleep(1000 * 50);
     }
