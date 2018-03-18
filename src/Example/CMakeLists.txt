@@ -1,1 +1,3 @@
+add_subdirectory(bt_with_ui)
+add_subdirectory(bt_with_ui_1)
 add_subdirectory(FsmUi)

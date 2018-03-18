@@ -18,6 +18,7 @@ void DuckingState::update(Heroine &heroine) {
 void DuckingState::enter(Heroine &heroine) {
     LOG(INFO) << "enter " << name();
     heroine.setGraphics(Image::DUCK);
+    LOG(INFO)<<heroine.debugString();
 }
 
 void DuckingState::exit(Heroine &heroine) {
@@ -132,11 +133,11 @@ void MovingState::update(Heroine &heroine) {
 }
 
 void MovingState::enter(Heroine &heroine) {
-
+    LOG(INFO) << "enter " << name();
 }
 
 void MovingState::exit(Heroine &heroine) {
-
+    LOG(INFO) << "exit " << name();
 }
 
 std::string MovingState::name() {
@@ -192,7 +193,7 @@ void Heroine::update() {
 
 Heroine::Heroine() {
     state_ = new StandingState();
-    equipment_ =new EquipmentState();
+    equipment_ = new EquipmentState();
 }
 
 void Heroine::superBomb() {
@@ -201,8 +202,4 @@ void Heroine::superBomb() {
 
 void Heroine::setGraphics(Image image) {
     LOG(INFO) << "setGraphics " << int(image);
-}
-
-void Heroine::init() {
-
 }

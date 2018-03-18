@@ -2,25 +2,52 @@
 #define NGSERVER_FSM_H
 
 
-/**
- * @brief Finate State Machine Design class
- *
- * FsmState     class
- * FsmMachie         class
- * FsmEventDate    class
- */
+#include <stack>
 
-class FsmEventData {
+namespace Fsm {
+
+class Event {
 public:
-    virtual ~FsmEventData() = default;
+    virtual ~Event() = default;
 };
 
-class FsmState {
-public:
-    virtual ~FsmState() = default;
+class State;
 
-    template<typename E, typename S>
-    S *handleEvent(E &) {};
+template<typename S>
+class StateMachine {
+public:
+    virtual ~StateMachine() = default;
+
+    virtual void update() = 0;
+
+    virtual void handleEvent(Event *event) = 0;
+
+    virtual void changeState(S *state) = 0;
+
+    virtual S *getCurrentState() const =0;
+
+    virtual std::string debugString() const =0;
+
+    State *popState() {
+        auto result = states_.top();
+        states_.pop();
+        return result;
+    }
+
+    void pushState(State *state) {
+        states_.push(state);
+    }
+
+private:
+    std::stack<State *> states_;
+};
+
+
+class State {
+public:
+    virtual ~State() = default;
+
+    virtual void handleEvent() = delete;
 
     virtual void update() = 0;
 
@@ -28,27 +55,14 @@ public:
 
     virtual void exit() = 0;
 
-    virtual void transition() = 0;
+    virtual bool condition() = delete;
 
-    virtual bool condition() = 0;
+    virtual std::string debugString() = delete;
 
-    virtual std::string debugString() = 0;
-
-    virtual std::string debugName() = 0;
+    virtual std::string debugName() = delete;
 };
 
-class FsmMachine {
-public:
-    virtual ~FsmMachine() = default;
-
-    void popState() {}
-
-    void pushState() {}
-
-    void getCurrentState() {}
-
-private:
-};
+}
 
 
 #endif //NGSERVER_FSM_H

@@ -1,14 +1,12 @@
 link_directories(/usr/local/lib/gtest/)
 link_directories(/usr/local/lib/glog/lib)
 
-add_executable(FsmUi
-        _FsmUi.cpp
-        Heroine.h
-        Heroine.cpp
-        libpng_test.cpp
-        Fsm.h)
+add_executable(bt_with_ui
+        _bt_with_ui.cpp
+        Base.cpp Base.h
+        Composite.cpp Composite.h Task.cpp Task.h Decorator.cpp Decorator.h Services.cpp Services.h Root.cpp Root.h)
 
-target_link_libraries(FsmUi
+target_link_libraries(bt_with_ui
         gtest
         glog
         Util

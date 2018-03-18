@@ -163,30 +163,31 @@ GLuint png_texture_load(const char *file_name, int *width, int *height) {
 }
 
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    auto event = HeroineEvent();
     if (action == GLFW_PRESS) {
         switch (key) {
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(window, GL_TRUE);
                 break;
             case GLFW_KEY_DOWN:
-                LOG(INFO) << "Press Down";
-                hero1.handleInput(Input::PRESS_DOWN);
+                event.input = Input::PRESS_DOWN;
+                hero1.handleEvent(&event);
                 break;
             case GLFW_KEY_A:
-                LOG(INFO) << "Press A";
-                hero1.handleInput(Input::FIRE);
+                event.input = Input::FIRE;
+                hero1.handleEvent(&event);
                 break;
             case GLFW_KEY_SPACE:
-                LOG(INFO) << "Press Space";
-                hero1.handleInput(Input::PRESS_SPACE);
+                event.input = Input::PRESS_SPACE;
+                hero1.handleEvent(&event);
                 break;
             case GLFW_KEY_LEFT:
-                LOG(INFO) << "Press Left";
-                hero1.handleInput(Input::PRESS_LEFT);
+                event.input = Input::PRESS_LEFT;
+                hero1.handleEvent(&event);
                 break;
             case GLFW_KEY_RIGHT:
-                LOG(INFO) << "Press Right";
-                hero1.handleInput(Input::PRESS_RIGHT);
+                event.input = Input::PRESS_RIGHT;
+                hero1.handleEvent(&event);
                 break;
             default:
                 break;
@@ -194,19 +195,18 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
     } else if (action == GLFW_RELEASE) {
         switch (key) {
             case GLFW_KEY_DOWN:
-                LOG(INFO) << "Release Down";
-                hero1.handleInput(Input::RELEASE_DOWN);
+                event.input = Input::RELEASE_DOWN;
+                hero1.handleEvent(&event);
                 break;
             case GLFW_KEY_SPACE:
-                LOG(INFO) << "Release Space";
                 break;
             case GLFW_KEY_LEFT:
-                LOG(INFO) << "Release Left";
-                hero1.handleInput(Input::RELEASE_LEFT);
+                event.input = Input::RELEASE_LEFT;
+                hero1.handleEvent(&event);
                 break;
             case GLFW_KEY_RIGHT:
-                LOG(INFO) << "Release Right";
-                hero1.handleInput(Input::RELEASE_RIGHT);
+                event.input = Input::RELEASE_RIGHT;
+                hero1.handleEvent(&event);
             default:
                 break;
         }

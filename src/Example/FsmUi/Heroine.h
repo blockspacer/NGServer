@@ -5,6 +5,7 @@
 #include <stack>
 
 #include <glog/logging.h>
+#include <cassert>
 
 #include "Fsm.h"
 
@@ -185,25 +186,54 @@ public:
     float fire_interval_ = 0.0;
 };
 
-class Heroine {
+class HeroineEvent : public Fsm::Event {
+public:
+    HeroineEvent() = default;
+
+    ~HeroineEvent() = default;
+
+    Input input;
+};
+
+class Heroine : public Fsm::StateMachine<HeroineState> {
 public:
     Heroine();
 
-    void init();
+    void handleInput(Input input);
 
-    virtual void handleInput(Input input);
+    void handleEvent(HeroineEvent *event) {
+        handleInput(event->input);
+        event = nullptr;
+        delete event;
+    }
 
-    virtual void update();
+    void handleEvent(Fsm::Event *event) override {
+
+    };
+
+    void update() override;
+
+    HeroineState *getCurrentState() const override {
+        return state_;
+    };
+
+    void changeState(HeroineState *state) override {
+        state_ = state;
+    };
 
     void superBomb();
 
     void setGraphics(Image image);
 
+    std::string debugString() const override {
+        return "current state " + state_->name();
+    }
+
     HeroineState *state_;
     HeroineState *equipment_;
 
 private:
-    std::stack<HeroineState> state_history_;
+    std::stack<HeroineState> states_;
 };
 
 
