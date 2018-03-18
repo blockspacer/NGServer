@@ -88,6 +88,8 @@ void drawPngTest(GLuint m_texture) {
 
     glBegin(GL_QUADS);
 
+    glColor3ub(255, 255, 255);
+
     glTexCoord2f(0.0f, 0.0f); // left bottom
     glVertex2f(-ww, 0.0f);
 
@@ -125,10 +127,57 @@ void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods
     }
 }
 
+void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        switch (button) {
+            case GLFW_MOUSE_BUTTON_LEFT:
+                LOG(INFO) << "Mosue left button clicked!";
+                break;
+            case GLFW_MOUSE_BUTTON_MIDDLE:
+                LOG(INFO) << "Mosue middle button clicked!";
+                break;
+            case GLFW_MOUSE_BUTTON_RIGHT:
+                LOG(INFO) << "Mosue right button clicked!";
+                break;
+            default:
+                return;
+        }
+    } else if (action == GLFW_RELEASE) {
+        switch (button) {
+            case GLFW_MOUSE_BUTTON_LEFT:
+                LOG(INFO) << "Mosue left button release!";
+                break;
+            case GLFW_MOUSE_BUTTON_MIDDLE:
+                LOG(INFO) << "Mosue middle button release!";
+                break;
+            case GLFW_MOUSE_BUTTON_RIGHT:
+                LOG(INFO) << "Mosue right button release!";
+                break;
+            default:
+                return;
+        }
+    }
+}
+
+void cursorPosCallback(GLFWwindow *window, double x, double y) {
+    LOG(INFO) << "Mouse position move to " << int(x) << " " << int(y);
+    return;
+}
+
+void cursorEnterCallback(GLFWwindow *window, int mods) {
+    LOG(INFO) << "Mouse Enter";
+}
+
+void scrollCallback(GLFWwindow *window, double x, double y) {
+    LOG(INFO) << "Scroll";
+}
+
 // main function
 int main(int argc, char *argv[]) {
+    // Glog init
     glogInit(argv);
 
+    // Gl init
     glInit();
 
     loadPngTest();
@@ -137,10 +186,12 @@ int main(int argc, char *argv[]) {
     glfwSetKeyCallback(window, keyCallback);
 
     // Sets the mouse callback.
-    glfwSetMouseButtonCallback(window, nullptr);
-    glfwSetCursorPosCallback(window, nullptr);
-    glfwSetCursorEnterCallback(window, nullptr);
-    glfwSetScrollCallback(window, nullptr);
+    // glfwSetMouseButtonCallback(window, mouseButtonCallback);
+    // glfwSetCursorPosCallback(window, cursorPosCallback);
+    // glfwSetCursorEnterCallback(window, cursorEnterCallback);
+    // glfwSetScrollCallback(window, scrollCallback);
+
+    // Sets the file drop callback.
     glfwSetDropCallback(window, nullptr);
 
     /* Loop until the user closes the window */
@@ -157,6 +208,7 @@ int main(int argc, char *argv[]) {
     // Terminates the GLFW library.
     glfwTerminate();
 
+    // Glog close
     glogClose();
 
     return 0;
