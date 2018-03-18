@@ -73,9 +73,15 @@ void loadPngTest() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     stbi_image_free(image);
+    LOG(INFO) << w << " " << h;
 }
 
 void drawPngTest(GLuint m_texture) {
+    int w = 160;
+    int h = 80;
+    float ww = (float) w / WIDTH * 2;
+    float hh = (float) h / WIDTH * 2;
+
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -83,16 +89,16 @@ void drawPngTest(GLuint m_texture) {
     glBegin(GL_QUADS);
 
     glTexCoord2f(0.0f, 0.0f); // left bottom
-    glVertex2f(-0.4f, 0.3f);
+    glVertex2f(-ww, 0.0f);
 
     glTexCoord2f(1.0f, 0.0f); // right bottom
-    glVertex2f(0.0f, 0.3f);
+    glVertex2f(0.0f, 0.0f);
 
     glTexCoord2f(1.0f, -1.0f); // right top
-    glVertex2f(0.0f, 0.5f);
+    glVertex2f(0.0f, hh);
 
     glTexCoord2f(0.0f, -1.0f); // left top
-    glVertex2f(-0.4f, 0.5f);
+    glVertex2f(-ww, hh);
 
     glEnd();
 }
